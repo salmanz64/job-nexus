@@ -1,12 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'package:jobnexus/core/enums/roles.dart';
 
 class UserModel {
   final String id;
   final String name;
   final String email;
-  final String token;
-  final String role;
+  final String? token;
+  final UserRole role;
 
   UserModel({
     required this.id,
@@ -21,7 +21,7 @@ class UserModel {
     String? name,
     String? email,
     String? token,
-    String? role,
+    UserRole? role,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -33,27 +33,27 @@ class UserModel {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'name': name,
       'email': email,
       'token': token,
-      'role': role,
+      'role': role.name,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      token: map['token'] as String,
-      role: map['role'] as String,
+      id: map['id'],
+      name: map['name'],
+      email: map['email'],
+      token: map['token'],
+      role: UserRole.values.firstWhere((e) => e.name == map['role']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory UserModel.fromJson(String source) =>
-      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      UserModel.fromMap(json.decode(source));
 }

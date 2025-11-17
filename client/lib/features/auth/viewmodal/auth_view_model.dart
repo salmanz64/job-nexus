@@ -22,6 +22,7 @@ class AuthViewModel extends _$AuthViewModel {
     await _authLocalRepository.init();
   }
 
+  //Sign Up
   Future<void> signUpUser({
     required String name,
     required String email,
@@ -45,6 +46,27 @@ class AuthViewModel extends _$AuthViewModel {
     print(val);
   }
 
+  //Log In
+  Future<void> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    state = AsyncValue.loading();
+    final res = await _authRemoteRepository.logIn(
+      email: email,
+      password: password,
+    );
+
+    final val = switch (res) {
+      Left(value: final l) =>
+        state = AsyncValue.error(l.message, StackTrace.current),
+      Right(value: final r) => _loginSuccess(r),
+    };
+
+    print(val);
+  }
+
+  //helpers
   AsyncValue<UserModel>? _loginSuccess(UserModel user) {
     _authLocalRepository.setToken(user.token);
     return state = AsyncValue.data(user);

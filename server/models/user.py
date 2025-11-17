@@ -1,5 +1,5 @@
 from models.base import Base
-from sqlalchemy import TEXT,Column,VARCHAR,LargeBinary,create_engine
+from sqlalchemy import TEXT, Boolean,Column,VARCHAR,LargeBinary,create_engine
 from sqlalchemy.orm import relationship
 
 class User(Base):

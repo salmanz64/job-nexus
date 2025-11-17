@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:jobnexus/core/widgets/theme/app_pallete.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/profile/view/pages/edit_profile_page.dart';
 
 class CandidateProfile extends StatefulWidget {

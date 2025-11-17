@@ -16,6 +16,7 @@ AuthRemoteRepository authRemoteRepository(Ref ref) {
 }
 
 class AuthRemoteRepository {
+  //Sign Up
   Future<Either<AppFailure, UserModel>> signup({
     required String name,
     required String email,
@@ -39,7 +40,36 @@ class AuthRemoteRepository {
       if (response.statusCode != 201) {
         return Left(AppFailure(resBody['detail']));
       }
-      return Right(UserModel.fromMap(resBody));
+      return Right(
+        UserModel.fromMap(resBody['user']).copyWith(token: resBody['token']),
+      );
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
+
+  //Sign In
+  Future<Either<AppFailure, UserModel>> logIn({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${ServerConstants.serverUrl}/auth/login"),
+        headers: {'Content-type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      final resBody = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure(resBody['detail']));
+      }
+
+      print(resBody);
+      return Right(
+        UserModel.fromMap(resBody['user']).copyWith(token: resBody['token']),
+      );
     } catch (e) {
       return Left(AppFailure(e.toString()));
     }

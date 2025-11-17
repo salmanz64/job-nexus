@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jobnexus/core/widgets/theme/app_pallete.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 
 class AppTheme {
   static _border(Color color) => OutlineInputBorder(

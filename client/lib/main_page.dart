@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:jobnexus/core/settings/view/pages/settings_page.dart';
-import 'package:jobnexus/core/widgets/theme/app_pallete.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/applications/view/pages/application_page.dart';
 
 import 'package:jobnexus/features/chat/view/pages/chat_page.dart';
@@ -11,14 +11,26 @@ import 'package:jobnexus/features/notification/view/pages/notification_page.dart
 import 'package:jobnexus/features/profile/view/pages/profile_page.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({super.key});
+  final bool isRecruiter;
+  MainPage({super.key, required this.isRecruiter});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  List pages = [HomePage(), ApplicationPage(), ChatPage(), ProfilePage()];
+  late List pages;
+
+  @override
+  void initState() {
+    super.initState();
+    pages = [
+      HomePage(isRecruiter: widget.isRecruiter),
+      ApplicationPage(isRecruiter: widget.isRecruiter),
+      ChatPage(),
+      ProfilePage(isRecruiter: widget.isRecruiter),
+    ];
+  }
 
   int _selectedIndex = 0;
 

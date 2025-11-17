@@ -3,8 +3,8 @@ import 'package:jobnexus/features/home/view/pages/client_home.dart';
 import 'package:jobnexus/features/home/view/pages/recruiter_home.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  final isRecruiter = true;
+  final bool isRecruiter;
+  const HomePage({super.key, required this.isRecruiter});
 
   @override
   Widget build(BuildContext context) {

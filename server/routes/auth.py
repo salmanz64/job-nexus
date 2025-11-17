@@ -23,13 +23,20 @@ def signup(user:CreateUser,db:Session = Depends(get_db)):
     
     hashedpw = bcrypt.hashpw(user.password.encode(),bcrypt.gensalt())
     
-    userdb = User(id=str(uuid.uuid4()),email=user.email,name=user.name,password=user.password)
+    userdb = User(id=str(uuid.uuid4()),email=user.email,name=user.name,password=hashedpw,role=user.role)
+    
     
     db.add(userdb)
     db.commit()
     db.refresh(userdb)
     
-    return userdb
+    token = jwt.encode({"id":userdb.id},'password_key',algorithm="HS256")
+    
+    return {'token':token,'user':userdb}
+
+
+
+
 
 @router.post('/login',status_code=200)
 def loginUser(user:LoginUser,db: Session = Depends(get_db)):
@@ -46,11 +53,11 @@ def loginUser(user:LoginUser,db: Session = Depends(get_db)):
     return {'token':token,'user':userdb}
 
 
-@router.get('/')
-def current_user_data(db:Session=Depends(get_db),user_dict=Depends(auth_middleware)):
-    user = db.query(User).filter(User.id == user_dict['uid'])
+# @router.get('/')
+# def current_user_data(db:Session=Depends(get_db),user_dict=Depends(auth_middleware)):
+#     user = db.query(User).filter(User.id == user_dict['uid'])
     
-    if not user:
-        raise HTTPException(404,'User not found!')
+#     if not user:
+#         raise HTTPException(404,'User not found!')
     
-    return user
+#     return user

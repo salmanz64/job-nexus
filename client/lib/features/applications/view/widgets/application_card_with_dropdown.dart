@@ -233,7 +233,7 @@ class _ApplicationCardWithDropdownState
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text('Message'),
+                  child: Text('Message', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],

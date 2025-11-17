@@ -3,15 +3,15 @@ import 'package:jobnexus/features/applications/view/pages/candidate_application.
 import 'package:jobnexus/features/applications/view/pages/recruiter_application.dart';
 
 class ApplicationPage extends StatelessWidget {
-  const ApplicationPage({super.key});
-  final bool isRecruiter = true;
+  final bool isRecruiter;
+  const ApplicationPage({super.key, required this.isRecruiter});
 
   @override
   Widget build(BuildContext context) {
     if (isRecruiter) {
-      return CandidateApplication();
-    } else {
       return RecruiterApplications();
+    } else {
+      return CandidateApplication();
     }
   }
 }

@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 
 from sqlalchemy import create_engine
 
-DATABASE_URL = 'postgresql://postgres:salman%401205@localhost:5432/flickpick'
+DATABASE_URL = 'postgresql://postgres:salman%401205@localhost:5432/jobnexus'
 
 engine = create_engine(DATABASE_URL)
 
