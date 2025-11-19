@@ -9,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
-  // await container.read(authViewModelProvider.notifier).initSharePreferences();
+  await container.read(authViewModelProvider.notifier).initSharePreferences();
 
   runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }

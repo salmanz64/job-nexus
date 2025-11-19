@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jobnexus/features/auth/repository/auth_local_repository.dart';
 
-class CandidateNotf extends StatefulWidget {
+class CandidateNotf extends ConsumerStatefulWidget {
   const CandidateNotf({Key? key}) : super(key: key);
 
   @override
-  State<CandidateNotf> createState() => _CandidateNotfState();
+  ConsumerState<CandidateNotf> createState() => _CandidateNotfState();
 }
 
-class _CandidateNotfState extends State<CandidateNotf> {
+class _CandidateNotfState extends ConsumerState<CandidateNotf> {
   List<NotificationItem> notifications = [
     NotificationItem(
       id: '1',
@@ -103,9 +105,7 @@ class _CandidateNotfState extends State<CandidateNotf> {
         actions: [
           IconButton(
             icon: Icon(Iconsax.setting, color: Colors.grey[700]),
-            onPressed: () {
-              // Navigate to notification settings
-            },
+            onPressed: () {},
           ),
         ],
       ),

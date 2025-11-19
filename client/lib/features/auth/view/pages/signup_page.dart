@@ -46,7 +46,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => AddRecruiterProfileScreen(),
+              builder: (context) => AddRecruiterProfileScreen(role: data.role),
             ),
             (_) => false,
           );

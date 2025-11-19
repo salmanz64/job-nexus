@@ -11,3 +11,4 @@ class User(Base):
     password = Column(LargeBinary)
     role = Column(VARCHAR(20),default='candidate')
 
+    profile = relationship("Profile", back_populates="user", uselist=False)
