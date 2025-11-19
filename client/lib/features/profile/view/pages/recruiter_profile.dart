@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/failure/failure.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/profile/view/widgets/recruiter_profile_header.dart';
+import 'package:jobnexus/features/profile/view/widgets/recruiter_section.dart';
 import 'package:jobnexus/features/profile/viewmodal/profile_view_model.dart';
 
 class RecruiterProfile extends ConsumerStatefulWidget {
@@ -37,84 +39,181 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileViewModelProvider.notifier).getCurrentProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final profileData = ref.watch(profileViewModelProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: profileData?.when(
-        loading: () {
-          return Center(child: CircularProgressIndicator());
-        },
-        error: (error, stackTrace) {
-          return throw (error.toString());
-        },
+      body:
+          profileData == null
+              ? Center(child: Text("No Profile Data"))
+              : profileData.when(
+                loading: () {
+                  return Center(child: CircularProgressIndicator());
+                },
+                error: (error, stackTrace) {
+                  return throw (error.toString());
+                },
 
-        data:
-            (profile) => CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: 200,
-                  floating: false,
-                  pinned: true,
-                  backgroundColor: Colors.blue[700],
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: Text(
-                      'Company Profile',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    background: Image.network(
-                      companyProfile.coverImage,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Colors.blue[800]!, Colors.blue[600]!],
+                data:
+                    (profile) => CustomScrollView(
+                      slivers: [
+                        SliverAppBar(
+                          expandedHeight: 200,
+                          floating: false,
+                          pinned: true,
+                          backgroundColor: Pallete.purpleColor,
+                          flexibleSpace: FlexibleSpaceBar(
+                            title: Text(
+                              'Company Profile',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            background: Image.network(
+                              companyProfile.coverImage,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Pallete.purpleColor,
+                                        Colors.blue[600]!,
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
-                        );
-                      },
+                          actions: [
+                            IconButton(
+                              icon: Icon(Iconsax.edit, color: Colors.white),
+                              onPressed: () => _editProfile(context),
+                            ),
+                          ],
+                        ),
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              RecruiterProfileHeader(
+                                companyName: profile.name,
+                                location: profile.location,
+                                industry: profile.industry,
+                              ),
+                              _buildCompanyStats(),
+                              RecruiterSection(
+                                title: 'About Company',
+                                icon: Iconsax.info_circle,
+                                child: Text(
+                                  profile.bio ?? "No Bio Set",
+                                  style: TextStyle(color: Colors.grey[700]),
+                                ),
+                              ),
+                              RecruiterSection(
+                                title: 'Company Details',
+                                icon: Iconsax.building,
+                                child: Column(
+                                  children: [
+                                    _buildDetailRow(
+                                      Iconsax.people,
+                                      'Company Size',
+                                      profile.companySize ?? "Not Set",
+                                    ),
+                                    _buildDetailRow(
+                                      Iconsax.calendar,
+                                      'Founded',
+                                      profile.foundedYear.toString(),
+                                    ),
+                                    _buildDetailRow(
+                                      Iconsax.global,
+                                      'Website',
+                                      profile.website ?? "Not Set",
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              //Specialites
+                              RecruiterSection(
+                                title: 'Specialties',
+                                icon: Iconsax.cpu,
+                                child: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children:
+                                      profile.specialities?.map((specialty) {
+                                        return Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue[50],
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.blue[100]!,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            specialty,
+                                            style: TextStyle(
+                                              color: Pallete.purpleColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList() ??
+                                      [],
+                                ),
+                              ),
+
+                              //Contact Informations
+                              RecruiterSection(
+                                title: 'Contact Information',
+                                icon: Iconsax.sms,
+                                child: Column(
+                                  children: [
+                                    _buildContactRow(
+                                      Iconsax.sms,
+                                      'Email',
+                                      profile.email,
+                                    ),
+                                    _buildContactRow(
+                                      Iconsax.call,
+                                      'Phone',
+                                      profile.phone,
+                                    ),
+                                    _buildContactRow(
+                                      Iconsax.location,
+                                      'Address',
+                                      profile.location,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: Icon(Iconsax.edit, color: Colors.white),
-                      onPressed: () => _editProfile(context),
-                    ),
-                  ],
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      RecruiterProfileHeader(
-                        companyName: profile.name,
-                        location: profile.location,
-                        industry: profile.industry,
-                      ),
-                      _buildCompanyStats(),
-                      _buildAboutSection(),
-                      _buildCompanyDetails(),
-                      _buildSpecialtiesSection(),
-                      _buildContactInfo(),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _editProfile(context),
-        backgroundColor: Colors.blue[700],
-        child: Icon(Iconsax.edit_2, color: Colors.white),
-      ),
+              ),
     );
   }
 
@@ -153,131 +252,12 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blue[700],
+            color: Pallete.purpleColor,
           ),
         ),
         SizedBox(height: 4),
         Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
-    );
-  }
-
-  Widget _buildAboutSection() {
-    return _buildSection(
-      title: 'About Company',
-      icon: Iconsax.info_circle,
-      child: Text(
-        companyProfile.about,
-        style: TextStyle(color: Colors.grey[700]),
-      ),
-    );
-  }
-
-  Widget _buildCompanyDetails() {
-    return _buildSection(
-      title: 'Company Details',
-      icon: Iconsax.building,
-      child: Column(
-        children: [
-          _buildDetailRow(
-            Iconsax.people,
-            'Company Size',
-            companyProfile.companySize,
-          ),
-          _buildDetailRow(Iconsax.calendar, 'Founded', companyProfile.founded),
-          _buildDetailRow(Iconsax.global, 'Website', companyProfile.website),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSpecialtiesSection() {
-    return _buildSection(
-      title: 'Specialties',
-      icon: Iconsax.cpu,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children:
-            companyProfile.specialties.map((specialty) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.blue[100]!),
-                ),
-                child: Text(
-                  specialty,
-                  style: TextStyle(
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              );
-            }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildContactInfo() {
-    return _buildSection(
-      title: 'Contact Information',
-      icon: Iconsax.sms,
-      child: Column(
-        children: [
-          _buildContactRow(Iconsax.sms, 'Email', companyProfile.email),
-          _buildContactRow(Iconsax.call, 'Phone', companyProfile.phone),
-          _buildContactRow(
-            Iconsax.location,
-            'Address',
-            companyProfile.location,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection({
-    required String title,
-    required IconData icon,
-    required Widget child,
-  }) {
-    return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: Colors.blue[700], size: 20),
-              SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          child,
-        ],
-      ),
     );
   }
 
@@ -347,7 +327,7 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                   value,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.blue[700],
+                    color: Pallete.purpleColor,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

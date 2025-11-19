@@ -50,7 +50,9 @@ class _MainPageState extends State<MainPage> {
               bottomRight: Radius.circular(50),
             ),
           ),
-          child: GestureDetector(child: Center(child: Icon(Icons.person))),
+          child: GestureDetector(
+            child: Center(child: Icon(Icons.person, color: Colors.white)),
+          ),
         ),
         title: Center(
           child: Text('Jobs', style: TextStyle(fontWeight: FontWeight.w600)),

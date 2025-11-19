@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 
 class RecruiterProfileHeader extends StatelessWidget {
   final String companyName;
@@ -35,7 +36,7 @@ class RecruiterProfileHeader extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.blue, width: 3),
+              border: Border.all(color: Pallete.purpleColor, width: 3),
             ),
             child: ClipOval(
               child: Image.network(
@@ -68,7 +69,7 @@ class RecruiterProfileHeader extends StatelessWidget {
                   industry,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.blue[700],
+                    color: Pallete.purpleColor,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

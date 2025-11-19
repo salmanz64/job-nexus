@@ -59,4 +59,27 @@ class ProfileRemoteRepository {
       return Left(AppFailure(e.toString()));
     }
   }
+
+  //Get User Profile
+  Future<Either<AppFailure, RecruiterProfileModel>> getCurrentProfile({
+    required String token,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "${ServerConstants.serverUrl}/auth/",
+        ), // Your profile endpoint
+        headers: {'Content-type': 'application/json', 'x-auth-token': token},
+      );
+
+      final resBody = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure(resBody['detail'] ?? 'Failed to load profile'));
+      }
+      return Right(RecruiterProfileModel.fromMap(resBody));
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
 }

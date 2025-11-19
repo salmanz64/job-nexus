@@ -72,7 +72,7 @@ def setupProfile(profile:RecruiterProfileCreate,db:Session = Depends(get_db),use
         
 @router.get('/')
 def getUserData(db:Session=Depends(get_db),user_dict=Depends(auth_middleware)):
-    user = db.query(User).filter(User.id == user_dict['uid'])
+    user = db.query(User).filter(User.id == user_dict['uid']).first()
     
     if not user:
         raise HTTPException(404,'User not found!')

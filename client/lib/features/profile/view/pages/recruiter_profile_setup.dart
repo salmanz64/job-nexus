@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/enums/roles.dart';
+import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/core/utils.dart';
 import 'package:jobnexus/features/profile/view/pages/recruiter_profile.dart';
 import 'package:jobnexus/features/profile/view/widgets/profile_field.dart';
@@ -69,7 +70,7 @@ class _AddRecruiterProfileScreenState
           'Complete Your Profile',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
         ),
-        backgroundColor: Colors.blue[700],
+        backgroundColor: Pallete.purpleColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Iconsax.arrow_left, color: Colors.white),
@@ -245,7 +246,7 @@ class _AddRecruiterProfileScreenState
                         child: ElevatedButton(
                           onPressed: _saveProfile,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue[700],
+                            backgroundColor: Pallete.purpleColor,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -322,7 +323,7 @@ class _AddRecruiterProfileScreenState
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.blue[700]!, width: 2),
+              borderSide: BorderSide(color: Pallete.purpleColor!, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -356,7 +357,7 @@ class _AddRecruiterProfileScreenState
         const SizedBox(width: 12),
         Container(
           decoration: BoxDecoration(
-            color: Colors.blue[700],
+            color: Pallete.purpleColor,
             borderRadius: BorderRadius.circular(12),
           ),
           child: IconButton(
@@ -391,14 +392,18 @@ class _AddRecruiterProfileScreenState
                   Text(
                     specialty,
                     style: TextStyle(
-                      color: Colors.blue[700],
+                      color: Pallete.purpleColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () => _removeSpecialty(specialty),
-                    child: Icon(Icons.close, size: 16, color: Colors.blue[700]),
+                    child: Icon(
+                      Icons.close,
+                      size: 16,
+                      color: Pallete.purpleColor,
+                    ),
                   ),
                 ],
               ),

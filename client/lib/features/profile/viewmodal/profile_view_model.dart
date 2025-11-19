@@ -57,4 +57,24 @@ class ProfileViewModel extends _$ProfileViewModel {
       };
     }
   }
+
+  // Get Current Profile
+  Future<void> getCurrentProfile() async {
+    state = AsyncValue.loading();
+    final token = _authLocalRepository.getToken();
+
+    if (token != null) {
+      final res = await _profileRemoteRepository.getCurrentProfile(
+        token: token,
+      );
+
+      final val = switch (res) {
+        Left(value: final l) =>
+          state = AsyncValue.error(l.message, StackTrace.current),
+        Right(value: final r) => state = AsyncValue.data(r),
+      };
+    } else {
+      state = AsyncValue.error('No token found', StackTrace.current);
+    }
+  }
 }
