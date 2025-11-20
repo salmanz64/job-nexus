@@ -27,3 +27,4 @@ class Profile(Base):
     
     
     user = relationship("User", back_populates="profile")
+    # applications = relationship("Application", back_populates="candidate")

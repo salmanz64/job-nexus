@@ -12,3 +12,5 @@ class User(Base):
     role = Column(VARCHAR(20),default='candidate')
 
     profile = relationship("Profile", back_populates="user", uselist=False)
+    jobs = relationship("Job", back_populates="recruiter")
+

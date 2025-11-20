@@ -11,7 +11,7 @@ class CreateJobPage extends StatefulWidget {
 class _CreateJobPageState extends State<CreateJobPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _jobTitleController = TextEditingController();
-  final TextEditingController _companyNameController = TextEditingController();
+
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _salaryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -104,19 +104,7 @@ class _CreateJobPageState extends State<CreateJobPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _companyNameController,
-                    label: 'Company Name',
-                    hintText: 'Your company name',
-                    icon: Iconsax.building,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter company name';
-                      }
-                      return null;
-                    },
-                  ),
+
                   SizedBox(height: 16),
                   _buildTextField(
                     controller: _locationController,
@@ -590,7 +578,6 @@ class _CreateJobPageState extends State<CreateJobPage> {
       // Create job object with all data
       final newJob = {
         'title': _jobTitleController.text,
-        'company': _companyNameController.text,
         'location': _locationController.text,
         'type': _selectedJobType,
         'experience': _selectedExperience,
