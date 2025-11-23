@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:jobnexus/core/enums/roles.dart';
 import 'package:jobnexus/features/auth/repository/auth_local_repository.dart';
-import 'package:jobnexus/features/profile/models/recruiter_profile_model.dart';
+import 'package:jobnexus/features/profile/models/profile_model.dart';
 import 'package:jobnexus/features/profile/repository/profile_remote_repository.dart';
 import 'package:jobnexus/features/profile/view/pages/recruiter_profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +14,7 @@ class ProfileViewModel extends _$ProfileViewModel {
   late AuthLocalRepository _authLocalRepository;
 
   @override
-  AsyncValue<RecruiterProfileModel>? build() {
+  AsyncValue<ProfileModel>? build() {
     _profileRemoteRepository = ref.watch(profileRemoteRepositoryProvider);
     _authLocalRepository = ref.watch(authLocalRepositoryProvider);
     return null;

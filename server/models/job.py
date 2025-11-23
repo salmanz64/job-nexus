@@ -23,7 +23,7 @@ class Job(Base):
     skills = Column(String)  # e.g. "Python, FastAPI, Docker"
     
     # Foreign Keys
-    recruiter_id = Column(String, ForeignKey("users.id"), nullable=False)
+    recruiter_id = Column(String, ForeignKey("profiles.id"), nullable=False)
 
     
     # Status & Timestamps
@@ -33,6 +33,6 @@ class Job(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    recruiter = relationship("User", back_populates="jobs")
+    recruiter = relationship("Profile", back_populates="jobs")
 
-    # applications = relationship("Application", back_populates="job")
+    applications = relationship("Application", back_populates="job")

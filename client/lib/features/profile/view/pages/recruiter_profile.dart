@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/failure/failure.dart';
 import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/profile/view/widgets/recruiter_profile_header.dart';
-import 'package:jobnexus/features/profile/view/widgets/recruiter_section.dart';
+import 'package:jobnexus/features/profile/view/widgets/main_profile_section.dart';
 import 'package:jobnexus/features/profile/viewmodal/profile_view_model.dart';
 
 class RecruiterProfile extends ConsumerStatefulWidget {
@@ -112,10 +112,10 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                               RecruiterProfileHeader(
                                 companyName: profile.name,
                                 location: profile.location,
-                                industry: profile.industry,
+                                industry: profile.industry!,
                               ),
                               _buildCompanyStats(),
-                              RecruiterSection(
+                              MainProfileSection(
                                 title: 'About Company',
                                 icon: Iconsax.info_circle,
                                 child: Text(
@@ -123,7 +123,7 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                                   style: TextStyle(color: Colors.grey[700]),
                                 ),
                               ),
-                              RecruiterSection(
+                              MainProfileSection(
                                 title: 'Company Details',
                                 icon: Iconsax.building,
                                 child: Column(
@@ -148,7 +148,7 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                               ),
 
                               //Specialites
-                              RecruiterSection(
+                              MainProfileSection(
                                 title: 'Specialties',
                                 icon: Iconsax.cpu,
                                 child: Wrap(
@@ -184,7 +184,7 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                               ),
 
                               //Contact Informations
-                              RecruiterSection(
+                              MainProfileSection(
                                 title: 'Contact Information',
                                 icon: Iconsax.sms,
                                 child: Column(

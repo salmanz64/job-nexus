@@ -1,139 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/profile/view/pages/edit_profile_page.dart';
+import 'package:jobnexus/features/profile/view/widgets/candidate_profile_header.dart';
+import 'package:jobnexus/features/profile/view/widgets/info_row.dart';
+import 'package:jobnexus/features/profile/view/widgets/main_profile_section.dart';
+import 'package:jobnexus/features/profile/viewmodal/profile_view_model.dart';
 
-class CandidateProfile extends StatefulWidget {
+class CandidateProfile extends ConsumerStatefulWidget {
   const CandidateProfile({Key? key}) : super(key: key);
 
   @override
-  State<CandidateProfile> createState() => _CandidateProfileState();
+  ConsumerState<CandidateProfile> createState() => _CandidateProfileState();
 }
 
-class _CandidateProfileState extends State<CandidateProfile> {
-  final UserProfile userProfile = UserProfile(
-    name: 'Alex Morgan',
-    email: 'alex.morgan@email.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-    jobTitle: 'Senior Flutter Developer',
-    experience: '5 years',
-    education: 'BS Computer Science, Stanford University',
-    skills: ['Flutter', 'Dart', 'Firebase', 'REST API', 'UI/UX', 'Bloc'],
-    bio:
-        'Passionate mobile developer with 5+ years of experience building cross-platform applications. Strong focus on clean architecture and user experience.',
-    profileImage:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-    resumeUrl: 'https://example.com/resume.pdf',
-  );
+class _CandidateProfileState extends ConsumerState<CandidateProfile> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      ref.read(profileViewModelProvider.notifier).getCurrentProfile();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final profileData = ref.watch(profileViewModelProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildProfileHeader(),
-                _buildQuickStats(),
-                _buildPersonalInfo(),
-                _buildSkillsSection(),
-                _buildExperienceSection(),
-                _buildEducationSection(),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.blue, width: 3),
-            ),
-            child: ClipOval(
-              child: Image.network(
-                userProfile.profileImage,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Icon(Iconsax.user, color: Colors.grey[400]),
-                  );
+      body:
+          profileData == null
+              ? Center(child: Text("No Profile Data"))
+              : profileData.when(
+                loading: () {
+                  return Center(child: CircularProgressIndicator());
                 },
-              ),
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  userProfile.name,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  userProfile.jobTitle,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Iconsax.location, size: 16, color: Colors.grey[600]),
-                    SizedBox(width: 4),
-                    Text(
-                      userProfile.location,
-                      style: TextStyle(color: Colors.grey[600]),
+                error: (error, stackTrace) {
+                  return throw (error.toString());
+                },
+
+                data:
+                    (profile) => CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              CandidateProfileHeader(
+                                location: profile.location,
+                                name: profile.name,
+                                position: profile.jobTitle!,
+                              ),
+                              _buildQuickStats(),
+                              MainProfileSection(
+                                title: 'Personal Information',
+                                icon: Iconsax.user,
+                                child: Column(
+                                  children: [
+                                    InfoRow(
+                                      icon: Iconsax.sms,
+                                      isMultiLine: true,
+                                      label: 'Email',
+                                      value: profile.email,
+                                    ),
+                                    InfoRow(
+                                      icon: Iconsax.call,
+                                      label: 'Phone',
+                                      isMultiLine: true,
+                                      value: profile.phone,
+                                    ),
+                                    InfoRow(
+                                      icon: Iconsax.briefcase,
+                                      label: 'Experience',
+                                      isMultiLine: true,
+                                      value: profile.experienceYears.toString(),
+                                    ),
+                                    InfoRow(
+                                      isMultiLine: true,
+                                      icon: Iconsax.note_text,
+                                      label: 'Bio',
+                                      value: profile.bio!,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _buildExperienceSection(),
+                              _buildEducationSection(),
+                              SizedBox(height: 20),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EditProfilePage()),
-              );
-            },
-            icon: Icon(Icons.edit, color: Pallete.purpleColor),
-          ),
-        ],
-      ),
+              ),
     );
   }
 
@@ -181,59 +142,6 @@ class _CandidateProfileState extends State<CandidateProfile> {
     );
   }
 
-  Widget _buildPersonalInfo() {
-    return _buildSection(
-      title: 'Personal Information',
-      icon: Iconsax.user,
-      child: Column(
-        children: [
-          _buildInfoRow(Iconsax.sms, 'Email', userProfile.email),
-          _buildInfoRow(Iconsax.call, 'Phone', userProfile.phone),
-          _buildInfoRow(
-            Iconsax.briefcase,
-            'Experience',
-            userProfile.experience,
-          ),
-          _buildInfoRow(
-            Iconsax.note_text,
-            'Bio',
-            userProfile.bio,
-            isMultiLine: true,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkillsSection() {
-    return _buildSection(
-      title: 'Skills',
-      icon: Iconsax.cpu,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children:
-            userProfile.skills.map((skill) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.blue[100]!),
-                ),
-                child: Text(
-                  skill,
-                  style: TextStyle(
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              );
-            }).toList(),
-      ),
-    );
-  }
-
   Widget _buildExperienceSection() {
     return _buildSection(
       title: 'Experience',
@@ -261,10 +169,25 @@ class _CandidateProfileState extends State<CandidateProfile> {
     return _buildSection(
       title: 'Education',
       icon: Iconsax.book,
-      child: _buildEducationItem(
-        userProfile.education,
-        '2014 - 2018',
-        'GPA: 3.8/4.0',
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            SizedBox(height: 4),
+            Text("", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+            SizedBox(height: 4),
+            Text("", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+          ],
+        ),
       ),
     );
   }
@@ -307,54 +230,6 @@ class _CandidateProfileState extends State<CandidateProfile> {
           ),
           SizedBox(height: 16),
           child,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(
-    IconData icon,
-    String label,
-    String value, {
-    bool isMultiLine = false,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
-      ),
-      child: Row(
-        crossAxisAlignment:
-            isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-        children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: isMultiLine ? 3 : 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -404,32 +279,6 @@ class _CandidateProfileState extends State<CandidateProfile> {
                 style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEducationItem(String degree, String period, String details) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            degree,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800],
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(period, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-          SizedBox(height: 4),
-          Text(
-            details,
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ),

@@ -14,6 +14,7 @@ class JobModel {
   final String skills;
   final int applicationCount;
   final String status;
+  final DateTime createAt;
 
   JobModel({
     required this.title,
@@ -28,6 +29,7 @@ class JobModel {
     required this.skills,
     required this.applicationCount,
     required this.status,
+    required this.createAt,
   });
 
   JobModel copyWith({
@@ -57,6 +59,7 @@ class JobModel {
       skills: skills ?? this.skills,
       applicationCount: applicationCount ?? this.applicationCount,
       status: status ?? this.status,
+      createAt: createAt,
     );
   }
 
@@ -91,50 +94,7 @@ class JobModel {
       skills: map['skills'] as String,
       applicationCount: map['application_count'] as int,
       status: map['status'] as String,
+      createAt: DateTime.parse(map['created_at']),
     );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory JobModel.fromJson(String source) =>
-      JobModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'JobModel(title: $title, description: $description, requirements: $requirements, responsibilities: $responsibilities, location: $location, salaryRange: $salaryRange, jobType: $jobType, experienceLevel: $experienceLevel, category: $category, skills: $skills, applicationCount: $applicationCount, status: $status)';
-  }
-
-  @override
-  bool operator ==(covariant JobModel other) {
-    if (identical(this, other)) return true;
-
-    return other.title == title &&
-        other.description == description &&
-        other.requirements == requirements &&
-        other.responsibilities == responsibilities &&
-        other.location == location &&
-        other.salaryRange == salaryRange &&
-        other.jobType == jobType &&
-        other.experienceLevel == experienceLevel &&
-        other.category == category &&
-        other.skills == skills &&
-        other.applicationCount == applicationCount &&
-        other.status == status;
-  }
-
-  @override
-  int get hashCode {
-    return title.hashCode ^
-        description.hashCode ^
-        requirements.hashCode ^
-        responsibilities.hashCode ^
-        location.hashCode ^
-        salaryRange.hashCode ^
-        jobType.hashCode ^
-        experienceLevel.hashCode ^
-        category.hashCode ^
-        skills.hashCode ^
-        applicationCount.hashCode ^
-        status.hashCode;
   }
 }

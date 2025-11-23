@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jobnexus/core/theme/app_pallete.dart';
 
-class RecruiterSection extends StatelessWidget {
+class MainProfileSection extends StatelessWidget {
   final String title;
   final IconData icon;
   final Widget child;
-  const RecruiterSection({
+  const MainProfileSection({
     super.key,
     required this.title,
     required this.icon,

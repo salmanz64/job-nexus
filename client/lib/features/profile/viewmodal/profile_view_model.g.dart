@@ -13,11 +13,7 @@ part of 'profile_view_model.dart';
 const profileViewModelProvider = ProfileViewModelProvider._();
 
 final class ProfileViewModelProvider
-    extends
-        $NotifierProvider<
-          ProfileViewModel,
-          AsyncValue<RecruiterProfileModel>?
-        > {
+    extends $NotifierProvider<ProfileViewModel, AsyncValue<ProfileModel>?> {
   const ProfileViewModelProvider._()
     : super(
         from: null,
@@ -37,39 +33,29 @@ final class ProfileViewModelProvider
   ProfileViewModel create() => ProfileViewModel();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<RecruiterProfileModel>? value) {
+  Override overrideWithValue(AsyncValue<ProfileModel>? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<RecruiterProfileModel>?>(
-        value,
-      ),
+      providerOverride: $SyncValueProvider<AsyncValue<ProfileModel>?>(value),
     );
   }
 }
 
-String _$profileViewModelHash() => r'd934be7cfc0170aaa97769980f6b7b0129e719ee';
+String _$profileViewModelHash() => r'9680f316fec7eb434d6e7aea5d2c0d9c279f36b2';
 
-abstract class _$ProfileViewModel
-    extends $Notifier<AsyncValue<RecruiterProfileModel>?> {
-  AsyncValue<RecruiterProfileModel>? build();
+abstract class _$ProfileViewModel extends $Notifier<AsyncValue<ProfileModel>?> {
+  AsyncValue<ProfileModel>? build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
     final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<RecruiterProfileModel>?,
-              AsyncValue<RecruiterProfileModel>?
-            >;
+        this.ref as $Ref<AsyncValue<ProfileModel>?, AsyncValue<ProfileModel>?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<RecruiterProfileModel>?,
-                AsyncValue<RecruiterProfileModel>?
-              >,
-              AsyncValue<RecruiterProfileModel>?,
+              AnyNotifier<AsyncValue<ProfileModel>?, AsyncValue<ProfileModel>?>,
+              AsyncValue<ProfileModel>?,
               Object?,
               Object?
             >;

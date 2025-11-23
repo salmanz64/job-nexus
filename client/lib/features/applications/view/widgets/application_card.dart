@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:jobnexus/core/constants/application_status_color.dart';
 
 class ApplicationCard extends StatelessWidget {
-  const ApplicationCard({super.key});
+  final String jobTitle;
+  final String companyName;
+  final Color color;
+  final String status;
+  const ApplicationCard({
+    super.key,
+    required this.jobTitle,
+    required this.companyName,
+    required this.status,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,27 +32,24 @@ class ApplicationCard extends StatelessWidget {
           ),
         ),
       ),
-      title: Text(
-        'Ui/Ux Designer',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
+      title: Text(jobTitle, style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Figma'),
+          Text(companyName),
           SizedBox(height: 10),
           Container(
             width: 100,
             height: 20,
 
             decoration: BoxDecoration(
-              color: Colors.red[100],
+              color: color.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
               child: Text(
-                'Application Sent',
-                style: TextStyle(color: Colors.red, fontSize: 10),
+                'Application $status',
+                style: TextStyle(color: color, fontSize: 10),
               ),
             ),
           ),

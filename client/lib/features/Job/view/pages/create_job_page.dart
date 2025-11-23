@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jobnexus/features/home/viewmodal/home_view_model.dart';
 
-class CreateJobPage extends StatefulWidget {
+class CreateJobPage extends ConsumerStatefulWidget {
   const CreateJobPage({super.key});
 
   @override
-  State<CreateJobPage> createState() => _CreateJobPageState();
+  ConsumerState<CreateJobPage> createState() => _CreateJobPageState();
 }
 
-class _CreateJobPageState extends State<CreateJobPage> {
+class _CreateJobPageState extends ConsumerState<CreateJobPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _jobTitleController = TextEditingController();
 
@@ -575,19 +577,20 @@ class _CreateJobPageState extends State<CreateJobPage> {
 
   void _createJob() {
     if (_formKey.currentState!.validate()) {
-      // Create job object with all data
-      final newJob = {
-        'title': _jobTitleController.text,
-        'location': _locationController.text,
-        'type': _selectedJobType,
-        'experience': _selectedExperience,
-        'category': _selectedCategory,
-        'salary': _salaryController.text,
-        'skills': _selectedSkills,
-        'description': _descriptionController.text,
-        'requirements': _requirementsController.text,
-        'responsibilities': _responsibilitiesController.text,
-      };
+      ref
+          .read(homeViewModelProvider.notifier)
+          .createJob(
+            title: _jobTitleController.text,
+            location: _locationController.text,
+            jobType: _jobTitleController.text,
+            experienceLevel: _selectedExperience,
+            category: _selectedCategory,
+            salaryRange: _salaryController.text,
+            skills: _selectedSkills.join(', '),
+            description: _descriptionController.text,
+            requirements: _requirementsController.text,
+            responsibilities: _responsibilitiesController.text,
+          );
 
       // Show success dialog
       showDialog(

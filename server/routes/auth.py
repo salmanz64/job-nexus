@@ -9,7 +9,7 @@ from database import get_db
 from models.user import User
 from pydantic_schemas.userLogin import LoginUser
 from middlewares.auth_middleware import auth_middleware
-from pydantic_schemas.recruiter_profile_create import RecruiterProfileCreate
+from pydantic_schemas.profile_create import ProfileCreate
 from models.profile import Profile
 
 
@@ -58,9 +58,9 @@ def loginUser(user:LoginUser,db: Session = Depends(get_db)):
 
 # Set Up Profile
 @router.post('/setup-profile',status_code=201,)
-def setupProfile(profile:RecruiterProfileCreate,db:Session = Depends(get_db),user_dict=Depends(auth_middleware)):
+def setupProfile(profile:ProfileCreate,db:Session = Depends(get_db),user_dict=Depends(auth_middleware)):
     userid = user_dict['uid']
-    userProfile = Profile(id=str(uuid.uuid4()),user_id=userid,name=profile.name,location=profile.location,phone=profile.phone,email=profile.email,bio=profile.bio,industry=profile.industry,company_size=profile.companySize,founded_year=profile.foundedYear,specialities=profile.specialities,website=profile.website)
+    userProfile = Profile(id=str(uuid.uuid4()),user_id=userid,name=profile.name,location=profile.location,phone=profile.phone,email=profile.email,bio=profile.bio,industry=profile.industry,company_size=profile.company_size,founded_year=profile.founded_year,specialities=profile.specialities,website=profile.website,experience_years=profile.experience_years,job_title=profile.job_title,skills=profile.skills,education=profile.education,resume_url=profile.resume_url)
 
     db.add(userProfile)
     db.commit()

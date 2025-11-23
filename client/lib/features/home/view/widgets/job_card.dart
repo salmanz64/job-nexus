@@ -2,9 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:jobnexus/features/Job/view/pages/job_details_page.dart';
 import 'package:jobnexus/features/home/view/widgets/job_small_info.dart';
 import 'package:jobnexus/features/home/view/widgets/job_tag.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class JobCard extends StatelessWidget {
-  const JobCard({super.key});
+  final String jobType;
+  final String salary;
+  final String jobTitle;
+  final String companyName;
+  final DateTime createAt;
+  final String applicationCount;
+  const JobCard({
+    super.key,
+    required this.jobType,
+    required this.salary,
+    required this.jobTitle,
+    required this.companyName,
+    required this.createAt,
+    required this.applicationCount,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +57,9 @@ class JobCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                JobTag(text: 'Full Time'),
+                JobTag(text: jobType),
                 JobTag(text: 'Remote'),
-                JobTag(text: '\$130k-Y'),
+                JobTag(text: salary),
                 Spacer(),
                 Container(
                   padding: EdgeInsets.all(8),
@@ -79,26 +94,31 @@ class JobCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Product Designer",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        jobTitle,
+                        softWrap: true,
+                        maxLines: null,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "Figma Lab",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                      Text(
+                        companyName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -106,8 +126,11 @@ class JobCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                JobSmallInfo(icon: Icons.alarm, text: '12m ago'),
-                JobSmallInfo(icon: Icons.people, text: '50+ Applied'),
+                JobSmallInfo(icon: Icons.alarm, text: timeago.format(createAt)),
+                JobSmallInfo(
+                  icon: Icons.people,
+                  text: '$applicationCount Applied',
+                ),
                 Container(
                   width: 100,
                   height: 50,

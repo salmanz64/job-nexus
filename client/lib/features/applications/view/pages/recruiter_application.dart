@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/features/applications/view/widgets/application_card_with_dropdown.dart';
+import 'package:jobnexus/features/applications/viewmodal/application_view_model.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class RecruiterApplications extends StatefulWidget {
+class RecruiterApplications extends ConsumerStatefulWidget {
   const RecruiterApplications({super.key});
 
   @override
-  State<RecruiterApplications> createState() => _RecruiterApplicationsState();
+  ConsumerState<RecruiterApplications> createState() =>
+      _RecruiterApplicationsState();
 }
 
-class _RecruiterApplicationsState extends State<RecruiterApplications> {
+class _RecruiterApplicationsState extends ConsumerState<RecruiterApplications> {
   String _selectedStatusFilter = 'All';
   String? _selectedJobFilter;
   bool _showJobFilter = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      ref
+          .read(applicationViewModelProvider.notifier)
+          .fetchRecruiterApplications();
+    });
+  }
+
   final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> myJobs = [
@@ -111,281 +127,314 @@ class _RecruiterApplicationsState extends State<RecruiterApplications> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationsData = ref.watch(applicationViewModelProvider);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
+      body: applicationsData.when(
+        error: (error, stackTrace) {
+          throw Exception(error.toString());
+        },
+        loading: () {
+          return Center(child: CircularProgressIndicator());
+        },
+        data:
+            (applicationss) => SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text(
-                        "Candidate\nApplications",
-                        style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'sans-serif',
-                          color: Color(0XFF110e48),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-
-                  // Search and Filter Row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                offset: const Offset(0, 5),
-                                blurRadius: 12,
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              "Candidate\nApplications",
+                              style: TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'sans-serif',
+                                color: Color(0XFF110e48),
                               ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            onChanged: (value) => setState(() {}),
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.search),
-                              hintText: 'Search Candidates',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      // Job Filter Button
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                              _selectedJobFilter != null
-                                  ? Color(0xFF6E75FF)
-                                  : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0, 3),
-                              blurRadius: 8,
                             ),
                           ],
                         ),
-                        padding: EdgeInsets.all(8),
-                        child: IconButton(
-                          icon: Icon(
-                            Iconsax.briefcase,
-                            color:
-                                _selectedJobFilter != null
-                                    ? Colors.white
-                                    : Color(0xFF6E75FF),
-                            size: 24,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _showJobFilter = !_showJobFilter;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      // Status Filter Button
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF6E75FF),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.filter_list,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                    ],
-                  ),
+                        SizedBox(height: 20),
 
-                  // Job Filter Dropdown
-                  if (_showJobFilter) ...[
-                    SizedBox(height: 16),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Iconsax.briefcase,
-                                size: 16,
-                                color: Colors.grey[600],
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Filter by Job',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey[800],
+                        // Search and Filter Row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      offset: const Offset(0, 5),
+                                      blurRadius: 12,
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  controller: _searchController,
+                                  onChanged: (value) => setState(() {}),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.search),
+                                    hintText: 'Search Candidates',
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ],
+                            ),
+                            SizedBox(width: 10),
+                            // Job Filter Button
+                            Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    _selectedJobFilter != null
+                                        ? Color(0xFF6E75FF)
+                                        : Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0, 3),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.all(8),
+                              child: IconButton(
+                                icon: Icon(
+                                  Iconsax.briefcase,
+                                  color:
+                                      _selectedJobFilter != null
+                                          ? Colors.white
+                                          : Color(0xFF6E75FF),
+                                  size: 24,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _showJobFilter = !_showJobFilter;
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            // Status Filter Button
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF6E75FF),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.all(8),
+                              child: Icon(
+                                Icons.filter_list,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Job Filter Dropdown
+                        if (_showJobFilter) ...[
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Iconsax.briefcase,
+                                      size: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Filter by Job',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _buildJobChip('All Jobs', null),
+                                    ...myJobs.map(
+                                      (job) => _buildJobChip(
+                                        job['title'],
+                                        job['id'],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
+                        ],
+
+                        SizedBox(height: 20),
+
+                        // Status Filter Tabs
+                        Container(
+                          height: 50,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
                             children: [
-                              _buildJobChip('All Jobs', null),
-                              ...myJobs.map(
-                                (job) => _buildJobChip(job['title'], job['id']),
+                              _buildStatusFilter(
+                                'All',
+                                applications.length,
+                                'All',
+                              ),
+                              _buildStatusFilter(
+                                'New',
+                                applications
+                                    .where((app) => app['status'] == 'New')
+                                    .length,
+                                'New',
+                              ),
+                              _buildStatusFilter(
+                                'Reviewed',
+                                applications
+                                    .where((app) => app['status'] == 'Reviewed')
+                                    .length,
+                                'Reviewed',
+                              ),
+                              _buildStatusFilter(
+                                'Shortlisted',
+                                applications
+                                    .where(
+                                      (app) => app['status'] == 'Shortlisted',
+                                    )
+                                    .length,
+                                'Shortlisted',
+                              ),
+                              _buildStatusFilter(
+                                'Rejected',
+                                applications
+                                    .where((app) => app['status'] == 'Rejected')
+                                    .length,
+                                'Rejected',
+                              ),
+                              _buildStatusFilter(
+                                'Hired',
+                                applications
+                                    .where((app) => app['status'] == 'Hired')
+                                    .length,
+                                'Hired',
                               ),
                             ],
                           ),
+                        ),
+
+                        // Active Filters Info
+                        if (_selectedJobFilter != null ||
+                            _selectedStatusFilter != 'All' ||
+                            _searchController.text.isNotEmpty) ...[
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[50],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Iconsax.filter,
+                                  size: 16,
+                                  color: Colors.blue[700],
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _buildFilterText(),
+                                    style: TextStyle(
+                                      color: Colors.blue[700],
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: _clearFilters,
+                                  child: Text(
+                                    'Clear',
+                                    style: TextStyle(
+                                      color: Colors.blue[700],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                  ],
 
-                  SizedBox(height: 20),
+                        SizedBox(height: 20),
 
-                  // Status Filter Tabs
-                  Container(
-                    height: 50,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildStatusFilter('All', applications.length, 'All'),
-                        _buildStatusFilter(
-                          'New',
-                          applications
-                              .where((app) => app['status'] == 'New')
-                              .length,
-                          'New',
-                        ),
-                        _buildStatusFilter(
-                          'Reviewed',
-                          applications
-                              .where((app) => app['status'] == 'Reviewed')
-                              .length,
-                          'Reviewed',
-                        ),
-                        _buildStatusFilter(
-                          'Shortlisted',
-                          applications
-                              .where((app) => app['status'] == 'Shortlisted')
-                              .length,
-                          'Shortlisted',
-                        ),
-                        _buildStatusFilter(
-                          'Rejected',
-                          applications
-                              .where((app) => app['status'] == 'Rejected')
-                              .length,
-                          'Rejected',
-                        ),
-                        _buildStatusFilter(
-                          'Hired',
-                          applications
-                              .where((app) => app['status'] == 'Hired')
-                              .length,
-                          'Hired',
-                        ),
+                        // Applications List
+                        if (filteredApplications.isEmpty)
+                          _buildEmptyState()
+                        else
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final application = applicationss[index];
+                              return ApplicationCardWithDropdown(
+                                candidate: application.profile!,
+                                appliedDate: timeago.format(
+                                  application.appliedAt,
+                                ),
+                                status: application.status,
+                                candidateEmail: application.profile!.email,
+                                candidateLocation:
+                                    application.profile!.location,
+                                candidateName: application.profile!.name,
+                                candidatePosition:
+                                    application.profile!.jobTitle ?? "",
+                                experience:
+                                    application.profile!.experienceYears ?? 0,
+                                jobTitle: application.job.title,
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return SizedBox(height: 16);
+                            },
+                            itemCount: applicationss.length,
+                          ),
                       ],
                     ),
                   ),
-
-                  // Active Filters Info
-                  if (_selectedJobFilter != null ||
-                      _selectedStatusFilter != 'All' ||
-                      _searchController.text.isNotEmpty) ...[
-                    SizedBox(height: 16),
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Iconsax.filter,
-                            size: 16,
-                            color: Colors.blue[700],
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _buildFilterText(),
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _clearFilters,
-                            child: Text(
-                              'Clear',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  SizedBox(height: 20),
-
-                  // Applications List
-                  if (filteredApplications.isEmpty)
-                    _buildEmptyState()
-                  else
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return ApplicationCardWithDropdown(
-                          application: filteredApplications[index],
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 16);
-                      },
-                      itemCount: filteredApplications.length,
-                    ),
                 ],
               ),
             ),
-          ],
-        ),
       ),
     );
   }

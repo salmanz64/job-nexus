@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:jobnexus/core/constants/server_constants.dart';
-import 'package:jobnexus/core/enums/roles.dart';
 import 'package:jobnexus/core/failure/failure.dart';
 import 'package:jobnexus/features/home/models/job_model.dart';
-import 'package:jobnexus/features/profile/models/recruiter_profile_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -77,6 +75,30 @@ class HomeRemoteRepository {
 
       final jobs = data.map((e) => JobModel.fromMap(e)).toList();
       print(jobs);
+
+      return Right(jobs);
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
+
+  //all Jobs
+  Future<Either<AppFailure, List<JobModel>>> fetchAllJobs({
+    required String token,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ServerConstants.serverUrl}/job/all"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure("Failed to fetch jobs"));
+      }
+
+      final List data = jsonDecode(response.body);
+
+      final jobs = data.map((e) => JobModel.fromMap(e)).toList();
 
       return Right(jobs);
     } catch (e) {

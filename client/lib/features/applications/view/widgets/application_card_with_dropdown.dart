@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jobnexus/core/constants/application_status_color.dart';
 import 'package:jobnexus/features/Job/view/pages/candidate_details.dart';
+import 'package:jobnexus/features/profile/models/profile_model.dart';
 
 class ApplicationCardWithDropdown extends StatefulWidget {
-  final Map<String, dynamic> application;
+  final String candidateName;
+  final String jobTitle;
+  final String candidateEmail;
+  final String candidatePosition;
+  String status;
+  final int experience;
+  final String candidateLocation;
+  final String appliedDate;
+  final ProfileModel candidate;
 
-  const ApplicationCardWithDropdown({super.key, required this.application});
+  ApplicationCardWithDropdown({
+    super.key,
+    required this.status,
+    required this.candidateName,
+    required this.candidate,
+    required this.jobTitle,
+    required this.candidateEmail,
+    required this.candidatePosition,
+    required this.experience,
+    required this.candidateLocation,
+    required this.appliedDate,
+  });
 
   @override
   State<ApplicationCardWithDropdown> createState() =>
@@ -14,24 +35,6 @@ class ApplicationCardWithDropdown extends StatefulWidget {
 
 class _ApplicationCardWithDropdownState
     extends State<ApplicationCardWithDropdown> {
-  late String _currentStatus;
-  late Color _statusColor;
-
-  final Map<String, Color> _statusColors = {
-    'New': Colors.blue,
-    'Reviewed': Colors.orange,
-    'Shortlisted': Colors.green,
-    'Rejected': Colors.red,
-    'Hired': Colors.purple,
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    _currentStatus = widget.application['status'];
-    _statusColor = _statusColors[_currentStatus] ?? Colors.grey;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,7 +61,7 @@ class _ApplicationCardWithDropdownState
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
-              widget.application['jobTitle'],
+              widget.jobTitle,
               style: TextStyle(
                 color: Color(0xFF6E75FF),
                 fontSize: 10,
@@ -93,7 +96,7 @@ class _ApplicationCardWithDropdownState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.application['name'],
+                      widget.candidateName,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -102,12 +105,12 @@ class _ApplicationCardWithDropdownState
                     ),
                     SizedBox(height: 4),
                     Text(
-                      widget.application['email'],
+                      widget.candidateEmail,
                       style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
                     SizedBox(height: 4),
                     Text(
-                      widget.application['position'],
+                      widget.candidatePosition,
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 12,
@@ -118,44 +121,46 @@ class _ApplicationCardWithDropdownState
                 ),
               ),
 
-              // Status Dropdown
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
-                  color: _statusColor.withOpacity(0.1),
+                  color: ApplicationStatusColors.colors[widget.status]!
+                      .withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: _statusColor.withOpacity(0.3)),
+                  border: Border.all(
+                    color: ApplicationStatusColors.colors[widget.status]!
+                        .withOpacity(0.3),
+                  ),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: _currentStatus,
+                    value: widget.status,
                     icon: Icon(
                       Iconsax.arrow_down_1,
                       size: 16,
-                      color: _statusColor,
+                      color: ApplicationStatusColors.colors[widget.status]!,
                     ),
                     elevation: 2,
                     style: TextStyle(
-                      color: _statusColor,
+                      color: ApplicationStatusColors.colors[widget.status]!,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                     onChanged: (String? newValue) {
                       if (newValue != null) {
                         setState(() {
-                          _currentStatus = newValue;
-                          _statusColor = _statusColors[newValue] ?? Colors.grey;
+                          widget.status = newValue;
                         });
                         _updateApplicationStatus(newValue);
                       }
                     },
                     items:
                         <String>[
-                          'New',
-                          'Reviewed',
-                          'Shortlisted',
-                          'Rejected',
-                          'Hired',
+                          'applied',
+                          'reviewed',
+                          'shortlisted',
+                          'rejected',
+                          'accepted',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -164,10 +169,16 @@ class _ApplicationCardWithDropdownState
                                 Icon(
                                   _getStatusIcon(value),
                                   size: 14,
-                                  color: _statusColors[value],
+                                  color: ApplicationStatusColors.colors[value]!,
                                 ),
                                 SizedBox(width: 6),
-                                Text(value),
+                                Text(
+                                  value,
+                                  style: TextStyle(
+                                    color:
+                                        ApplicationStatusColors.colors[value]!,
+                                  ),
+                                ),
                               ],
                             ),
                           );
@@ -183,14 +194,11 @@ class _ApplicationCardWithDropdownState
           // Additional Info
           Row(
             children: [
-              _buildInfoItem(
-                Iconsax.briefcase,
-                widget.application['experience'],
-              ),
+              _buildInfoItem(Iconsax.briefcase, widget.experience.toString()),
               SizedBox(width: 16),
-              _buildInfoItem(Iconsax.location, widget.application['location']),
+              _buildInfoItem(Iconsax.location, widget.candidateLocation),
               Spacer(),
-              _buildMatchScore(widget.application['matchScore']),
+              _buildMatchScore(73),
             ],
           ),
 
@@ -206,8 +214,9 @@ class _ApplicationCardWithDropdownState
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder:
-                            (context) =>
-                                CandidateDetailsPage(candidate: mockCandidate),
+                            (context) => CandidateDetailsPage(
+                              candidateDetails: widget.candidate,
+                            ),
                       ),
                     );
                   },
@@ -243,7 +252,7 @@ class _ApplicationCardWithDropdownState
 
           // Applied Date
           Text(
-            widget.application['appliedDate'],
+            widget.appliedDate,
             style: TextStyle(color: Colors.grey[500], fontSize: 10),
           ),
         ],

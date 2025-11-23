@@ -19,14 +19,31 @@ class HomeViewModel extends _$HomeViewModel {
   }
 
   // ---------------------------------------------------------
-  // 🔵 Fetch All Jobs
+  // 🔵 Fetch Recruiter Jobs
   // ---------------------------------------------------------
-  Future<void> fetchJobs() async {
+  Future<void> fetchRecruiterJobs() async {
     state = const AsyncValue.loading();
-    print('reached');
+
     final token = _authLocalRepository.getToken();
 
     final res = await _homeRemoteRepository.getRecruiterJobs(token: token!);
+
+    res.match(
+      (failure) =>
+          state = AsyncValue.error(failure.message, StackTrace.current),
+      (jobs) => state = AsyncValue.data(jobs),
+    );
+  }
+
+  // ---------------------------------------------------------
+  // 🔵 Fetch All Jobs
+  // ---------------------------------------------------------
+  Future<void> fetchAllJobs() async {
+    state = const AsyncValue.loading();
+
+    final token = _authLocalRepository.getToken();
+
+    final res = await _homeRemoteRepository.fetchAllJobs(token: token!);
 
     res.match(
       (failure) =>
@@ -73,7 +90,7 @@ class HomeViewModel extends _$HomeViewModel {
           state = AsyncValue.error(failure.message, StackTrace.current),
       (_) async {
         // After job creation → refresh job list
-        await fetchJobs();
+        await fetchRecruiterJobs();
       },
     );
   }

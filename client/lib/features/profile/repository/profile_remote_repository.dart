@@ -5,7 +5,7 @@ import 'package:jobnexus/core/constants/server_constants.dart';
 import 'package:jobnexus/core/enums/roles.dart';
 import 'package:jobnexus/core/failure/failure.dart';
 import 'package:jobnexus/features/auth/models/user_model.dart';
-import 'package:jobnexus/features/profile/models/recruiter_profile_model.dart';
+import 'package:jobnexus/features/profile/models/profile_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,7 +17,7 @@ ProfileRemoteRepository profileRemoteRepository(Ref ref) {
 }
 
 class ProfileRemoteRepository {
-  Future<Either<AppFailure, RecruiterProfileModel>> setupProfile({
+  Future<Either<AppFailure, ProfileModel>> setupProfile({
     required String name,
     required String industry,
     required String companySize,
@@ -54,14 +54,14 @@ class ProfileRemoteRepository {
       if (response.statusCode != 201) {
         return Left(AppFailure(resBody['detail']));
       }
-      return Right(RecruiterProfileModel.fromMap(resBody));
+      return Right(ProfileModel.fromMap(resBody));
     } catch (e) {
       return Left(AppFailure(e.toString()));
     }
   }
 
   //Get User Profile
-  Future<Either<AppFailure, RecruiterProfileModel>> getCurrentProfile({
+  Future<Either<AppFailure, ProfileModel>> getCurrentProfile({
     required String token,
   }) async {
     try {
@@ -77,7 +77,7 @@ class ProfileRemoteRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure(resBody['detail'] ?? 'Failed to load profile'));
       }
-      return Right(RecruiterProfileModel.fromMap(resBody));
+      return Right(ProfileModel.fromMap(resBody));
     } catch (e) {
       return Left(AppFailure(e.toString()));
     }

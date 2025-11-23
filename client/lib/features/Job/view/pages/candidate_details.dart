@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jobnexus/features/profile/models/profile_model.dart';
+import 'package:jobnexus/features/profile/view/pages/candidate_profile.dart';
 
 class CandidateDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> candidate;
+  final ProfileModel candidateDetails;
 
-  const CandidateDetailsPage({super.key, required this.candidate});
+  const CandidateDetailsPage({super.key, required this.candidateDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class CandidateDetailsPage extends StatelessWidget {
               title: 'About',
               icon: Iconsax.user,
               child: Text(
-                candidate['about']?.toString() ?? 'No information provided',
+                candidateDetails.bio ?? "No Bio Provided",
                 style: TextStyle(color: Colors.grey[700]),
               ),
             ),
@@ -136,17 +138,17 @@ class CandidateDetailsPage extends StatelessWidget {
                   _buildContactItem(
                     Iconsax.sms,
                     'Email',
-                    candidate['email']?.toString() ?? 'Not provided',
+                    candidateDetails.email,
                   ),
                   _buildContactItem(
                     Iconsax.call,
                     'Phone',
-                    candidate['phone']?.toString() ?? 'Not provided',
+                    candidateDetails.phone,
                   ),
                   _buildContactItem(
                     Iconsax.location,
                     'Location',
-                    candidate['location']?.toString() ?? 'Not provided',
+                    candidateDetails.location,
                   ),
                 ],
               ),
@@ -179,7 +181,7 @@ class CandidateDetailsPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${candidate['name']?.toString() ?? 'Candidate'}_Resume.pdf',
+                                '${candidateDetails.name.toString()}_Resume.pdf',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: Color(0XFF110e48),
@@ -278,7 +280,7 @@ class CandidateDetailsPage extends StatelessWidget {
 
   // Helper methods to safely extract data
   List<Map<String, dynamic>> _getExperienceList() {
-    final experience = candidate['experience'];
+    final experience = candidateDetails.education ?? [];
     if (experience is List) {
       return experience.whereType<Map<String, dynamic>>().toList();
     }
@@ -286,7 +288,7 @@ class CandidateDetailsPage extends StatelessWidget {
   }
 
   List<Map<String, dynamic>> _getEducationList() {
-    final education = candidate['education'];
+    final education = candidateDetails.education ?? [];
     if (education is List) {
       return education.whereType<Map<String, dynamic>>().toList();
     }
@@ -294,20 +296,14 @@ class CandidateDetailsPage extends StatelessWidget {
   }
 
   List<dynamic> _getSkillsList() {
-    final skills = candidate['skills'];
-    if (skills is List) {
-      return skills;
-    }
-    return [];
+    final skills = candidateDetails.skills ?? [];
+    return skills;
   }
 
   String _getExperienceText() {
-    final experience = candidate['experience'];
-    if (experience is String) {
-      return experience;
-    } else if (experience is List && experience.isNotEmpty) {
-      // Calculate total experience from experience list
-      return '${experience.length} ${experience.length == 1 ? 'position' : 'positions'}';
+    final experience = candidateDetails.experienceYears ?? 0;
+    if (experience > 0) {
+      return '${experience.toString()} years';
     }
     return 'No experience';
   }
@@ -337,8 +333,7 @@ class CandidateDetailsPage extends StatelessWidget {
             ),
             child: ClipOval(
               child: Image.network(
-                candidate['profileImage']?.toString() ??
-                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -355,7 +350,7 @@ class CandidateDetailsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  candidate['name']?.toString() ?? 'Unknown Candidate',
+                  candidateDetails.name,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -364,7 +359,7 @@ class CandidateDetailsPage extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  candidate['position']?.toString() ?? 'No position specified',
+                  candidateDetails.jobTitle ?? 'No position specified',
                   style: TextStyle(
                     fontSize: 16,
                     color: Color(0xFF6E75FF),
@@ -377,8 +372,7 @@ class CandidateDetailsPage extends StatelessWidget {
                     Icon(Iconsax.location, size: 14, color: Colors.grey[600]),
                     SizedBox(width: 4),
                     Text(
-                      candidate['location']?.toString() ??
-                          'Location not specified',
+                      candidateDetails.location,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     SizedBox(width: 16),
@@ -403,7 +397,7 @@ class CandidateDetailsPage extends StatelessWidget {
                       Icon(Iconsax.arrow_up_3, size: 12, color: Colors.green),
                       SizedBox(width: 4),
                       Text(
-                        '${candidate['matchScore']?.toString() ?? '0'}% Match',
+                        '${'0'}% Match',
                         style: TextStyle(
                           color: Colors.green,
                           fontSize: 12,
