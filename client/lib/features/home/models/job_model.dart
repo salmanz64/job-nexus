@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 class JobModel {
+  final String jobId;
   final String title;
   final String description;
   final String requirements;
@@ -17,6 +18,7 @@ class JobModel {
   final DateTime createAt;
 
   JobModel({
+    required this.jobId,
     required this.title,
     required this.description,
     required this.requirements,
@@ -47,6 +49,7 @@ class JobModel {
     String? status,
   }) {
     return JobModel(
+      jobId: jobId ?? this.jobId,
       title: title ?? this.title,
       description: description ?? this.description,
       requirements: requirements ?? this.requirements,
@@ -82,6 +85,7 @@ class JobModel {
 
   factory JobModel.fromMap(Map<String, dynamic> map) {
     return JobModel(
+      jobId: map['id'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       requirements: map['requirements'] as String,

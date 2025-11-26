@@ -52,6 +52,12 @@ class HomeViewModel extends _$HomeViewModel {
     );
   }
 
+  Future<void> removeJobInstantly(String jobId) async {
+    state = state.whenData(
+      (jobs) => jobs.where((job) => job.jobId != jobId).toList(),
+    );
+  }
+
   // ---------------------------------------------------------
   // 🟢 Create Job + Auto Refresh Job List
   // ---------------------------------------------------------

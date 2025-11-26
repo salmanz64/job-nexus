@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobnexus/features/Job/view/pages/job_details_page.dart';
+import 'package:jobnexus/features/applications/viewmodal/application_view_model.dart';
 import 'package:jobnexus/features/home/view/widgets/job_small_info.dart';
 import 'package:jobnexus/features/home/view/widgets/job_tag.dart';
+import 'package:jobnexus/features/home/viewmodal/home_view_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class JobCard extends StatelessWidget {
+class JobCard extends ConsumerWidget {
+  final String jobId;
   final String jobType;
   final String salary;
   final String jobTitle;
@@ -13,6 +17,7 @@ class JobCard extends StatelessWidget {
   final String applicationCount;
   const JobCard({
     super.key,
+    required this.jobId,
     required this.jobType,
     required this.salary,
     required this.jobTitle,
@@ -22,7 +27,7 @@ class JobCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -131,20 +136,30 @@ class JobCard extends StatelessWidget {
                   icon: Icons.people,
                   text: '$applicationCount Applied',
                 ),
-                Container(
-                  width: 100,
-                  height: 50,
+                GestureDetector(
+                  onTap: () {
+                    ref
+                        .read(applicationViewModelProvider.notifier)
+                        .createApplication(jobId: jobId);
 
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Colors.white,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Apply',
-                      style: TextStyle(
-                        color: Color(0xFF6E75FF),
-                        fontWeight: FontWeight.bold,
+                    // Optionally re-sync list from backend later
+                    ref.read(homeViewModelProvider.notifier).fetchAllJobs();
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 50,
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Apply',
+                        style: TextStyle(
+                          color: Color(0xFF6E75FF),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

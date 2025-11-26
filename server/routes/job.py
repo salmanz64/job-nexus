@@ -1,4 +1,5 @@
 from fastapi import APIRouter,Depends,HTTPException
+from sqlalchemy import not_
 from sqlalchemy.orm import Session
 from database import get_db
 from models.user import User
@@ -7,6 +8,8 @@ from models.profile import Profile
 from pydantic_schemas.jobcreate import JobCreate
 from models.job import Job
 import uuid
+
+from models.application import Application
 
 
 
@@ -41,8 +44,12 @@ def getRecruiterJobs(db:Session = Depends(get_db),user_dict=Depends(auth_middlew
 
 @router.get('/all',status_code=200)
 def getAllJobs(db:Session = Depends(get_db),user_dict=Depends(auth_middleware)):
+    user_id = user_dict['uid']
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    if not profile:
+        raise HTTPException(status_code=404,detail="Profile Not Found")
     
-    allJobs = db.query(Job).all()
+    allJobs = db.query(Job).filter(not_(db.query(Application).filter(Application.candidate_id == profile.id, Application.job_id==Job.id).exists())).all()
     
     return allJobs
     

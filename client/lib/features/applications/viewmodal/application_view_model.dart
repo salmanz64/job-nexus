@@ -62,7 +62,7 @@ class ApplicationViewModel extends _$ApplicationViewModel {
   // ---------------------------------------------------------
   Future<void> createApplication({
     required String jobId,
-    required String resumeUrl,
+    String? resumeUrl,
   }) async {
     state = const AsyncValue.loading();
 

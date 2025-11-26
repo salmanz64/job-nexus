@@ -21,7 +21,7 @@ class ApplicationRemoteRepository {
   Future<Either<AppFailure, ApplicationModel>> createApplication({
     required String token,
     required String jobId,
-    required String resumeUrl,
+    String? resumeUrl,
   }) async {
     try {
       final response = await http.post(
