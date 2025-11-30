@@ -24,4 +24,20 @@ class AuthLocalRepository {
   String? getToken() {
     return _sharedPreferences.getString('x-auth-token');
   }
+
+  // -------------------------- USER ID --------------------------
+  void setUserId(String? userId) async {
+    if (userId != null) {
+      await _sharedPreferences.setString('user_id', userId);
+    }
+  }
+
+  String? getUserId() {
+    return _sharedPreferences.getString('user_id');
+  }
+
+  // -------------------------- CLEAR SESSION --------------------------
+  Future<void> clear() async {
+    await _sharedPreferences.clear();
+  }
 }

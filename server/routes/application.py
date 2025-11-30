@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from fastapi import APIRouter,Depends,HTTPException
 from pydantic_schemas.usercreate import CreateUser
 from sqlalchemy.orm import Session
@@ -10,6 +12,8 @@ from models.job import Job
 from models.application import Application
 import uuid
 from sqlalchemy.orm import joinedload
+
+from pydantic_schemas.update_application import UpdateApplication
 
 router = APIRouter()
 
@@ -50,21 +54,34 @@ def createApplication(application:ApplicationCreate,db:Session = Depends(get_db)
     return new_application
 
 @router.get('/recruiter/')
-def getApplications(db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
+def getApplications(
+    status: Optional[str] = None,
+    search: Optional[str] = None,
+    job_id:Optional[str] = None,
+    db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
     user_id = user_dict['uid']
     profile = db.query(Profile).filter(Profile.user_id == user_id).first()
     if not profile:
         raise HTTPException(status_code=404,detail="Profile Not Found")
     
-    all_applications = (
+    query = (
         db.query(Application)
         .join(Job)
         .options(joinedload(Application.job), joinedload(Application.profile))
         .filter(Job.recruiter_id == profile.id)
-        .all()
+
     )
+    if status:
+        query = query.filter(Application.status == status)
+    if search:
+        query = query.filter(Job.title.ilike(f"%{search}%"))
+
+    if job_id:
+        query = query.filter(Application.job_id == job_id)
     
-    return all_applications
+    applications = query.all()
+    
+    return applications
 
 @router.get('/candidate/')
 def getMyApplications(db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
@@ -76,3 +93,38 @@ def getMyApplications(db: Session = Depends(get_db), user_dict = Depends(auth_mi
     all_applications = db.query(Application).join(Job).options(joinedload(Application.job).joinedload(Job.recruiter)).filter(Application.candidate_id==profile.id).all()
     
     return all_applications
+
+@router.patch('/update-status')
+def updateApplicationStatus(application:UpdateApplication,db: Session = Depends(get_db), user_dict = Depends(auth_middleware)):
+    user_id = user_dict['uid']
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    if not profile:
+        raise HTTPException(status_code=404,detail="Profile Not Found")
+    
+    targetApplication = db.query(Application).filter(Application.id == application.application_id).first()
+    
+    if not targetApplication:
+        raise HTTPException(status_code=404,detail="Application Not found")
+    
+    
+    if application.status not in ["applied","reviewed","shortlisted", "accepted", "rejected"]:
+        raise HTTPException(status_code=400, detail="Invalid status value")
+
+    
+    targetApplication.status = application.status
+    targetApplication.updated_at = datetime.utcnow()
+
+    
+    db.commit()
+    db.refresh(targetApplication)
+    
+    return {
+        
+        "message":"Update Successful",
+        "id":targetApplication.id,
+        "status":application.status
+        
+    }
+    
+    
+    

@@ -228,6 +228,8 @@ class _RecruiterHomeState extends ConsumerState<RecruiterHome> {
                             itemBuilder: (context, index) {
                               final job = jobs[index];
                               return JobList(
+                                onDismissed: () {},
+                                dismissibleKey: ValueKey(job.jobId),
                                 title: job.title,
                                 applications: job.applicationCount.toString(),
                                 status: job.status,

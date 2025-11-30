@@ -1,35 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jobnexus/features/auth/repository/auth_remote_repository.dart';
+import 'package:jobnexus/features/chat/models/chat_preview_model.dart';
+import 'package:jobnexus/features/chat/view/pages/chat_screen.dart';
 
-class ChatCard extends StatelessWidget {
-  const ChatCard({super.key});
+class ChatCard extends ConsumerWidget {
+  final ChatPreviewModel chat;
+
+  const ChatCard({super.key, required this.chat});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileImage =
+        chat.profileImage ??
+        "https://ui-avatars.com/api/?name=${chat.name.replaceAll(" ", "+")}";
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: ListTile(
-        leading: Image.network(
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Figma-logo.svg/1365px-Figma-logo.svg.png',
+        leading: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(profileImage),
         ),
-        title: Text('Google', style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('Our reviewer has gone through.....'),
+        title: Text(
+          chat.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          chat.lastMessage,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 25,
-              height: 25,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(50),
+            if (chat.unreadCount > 0) ...[
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue,
+                ),
+                child: Center(
+                  child: Text(
+                    chat.unreadCount.toString(),
+                    style: const TextStyle(color: Colors.white, fontSize: 11),
+                  ),
+                ),
               ),
-              child: Center(
-                child: Text('2', style: TextStyle(color: Colors.white)),
-              ),
+              const SizedBox(height: 6),
+            ],
+            Text(
+              chat.timestamp.toString(),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
-            SizedBox(height: 5),
-            Text('14:45'),
           ],
         ),
+        onTap: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) {
+                return ChatScreen(
+                  otherUserId: chat.profileId,
+                  otherUserName: chat.name,
+                  profileImage: null, // adjust based on model
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

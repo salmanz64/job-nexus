@@ -81,3 +81,24 @@ def getUserData(db:Session=Depends(get_db),user_dict=Depends(auth_middleware)):
         raise HTTPException(404,"Profile Not Found")
     
     return user.profile
+
+
+@router.get('/user/{profile_id}')
+def get_user_uid(profile_id: str, db: Session = Depends(get_db)):
+    profile = db.query(Profile).filter(Profile.id == profile_id).first()
+
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    return {"user_id": profile.user_id}
+
+
+@router.get("/profile/{user_id}")
+def get_profile_id(user_id: str, db: Session = Depends(get_db)):
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    return {"profile_id": profile.id}
+

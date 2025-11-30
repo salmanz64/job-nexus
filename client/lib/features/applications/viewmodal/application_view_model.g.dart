@@ -48,7 +48,7 @@ final class ApplicationViewModelProvider
 }
 
 String _$applicationViewModelHash() =>
-    r'c388d9452cbc4b86c36fe6b52f27647909d44386';
+    r'61207f05a95742a353f4570c9311ffedeb3d3149';
 
 abstract class _$ApplicationViewModel
     extends $Notifier<AsyncValue<List<ApplicationModel>>> {

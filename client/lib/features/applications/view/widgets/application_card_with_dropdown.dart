@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/constants/application_status_color.dart';
 import 'package:jobnexus/features/Job/view/pages/candidate_details.dart';
+import 'package:jobnexus/features/applications/viewmodal/application_view_model.dart';
+import 'package:jobnexus/features/auth/repository/auth_remote_repository.dart';
+import 'package:jobnexus/features/chat/view/pages/chat_screen.dart';
 import 'package:jobnexus/features/profile/models/profile_model.dart';
 
-class ApplicationCardWithDropdown extends StatefulWidget {
+class ApplicationCardWithDropdown extends ConsumerStatefulWidget {
+  final String applicationId;
   final String candidateName;
+  final String candidateId;
   final String jobTitle;
   final String candidateEmail;
   final String candidatePosition;
@@ -17,6 +23,8 @@ class ApplicationCardWithDropdown extends StatefulWidget {
 
   ApplicationCardWithDropdown({
     super.key,
+    required this.applicationId,
+    required this.candidateId,
     required this.status,
     required this.candidateName,
     required this.candidate,
@@ -29,12 +37,12 @@ class ApplicationCardWithDropdown extends StatefulWidget {
   });
 
   @override
-  State<ApplicationCardWithDropdown> createState() =>
+  ConsumerState<ApplicationCardWithDropdown> createState() =>
       _ApplicationCardWithDropdownState();
 }
 
 class _ApplicationCardWithDropdownState
-    extends State<ApplicationCardWithDropdown> {
+    extends ConsumerState<ApplicationCardWithDropdown> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -149,6 +157,12 @@ class _ApplicationCardWithDropdownState
                     onChanged: (String? newValue) {
                       if (newValue != null) {
                         setState(() {
+                          ref
+                              .read(applicationViewModelProvider.notifier)
+                              .updateApplicationStatus(
+                                applicationId: widget.applicationId,
+                                status: newValue,
+                              );
                           widget.status = newValue;
                         });
                         _updateApplicationStatus(newValue);
@@ -163,6 +177,7 @@ class _ApplicationCardWithDropdownState
                           'accepted',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
+                            onTap: () {},
                             value: value,
                             child: Row(
                               children: [
@@ -233,8 +248,19 @@ class _ApplicationCardWithDropdownState
               SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Message action
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return ChatScreen(
+                            otherUserId: widget.candidateId, //profile id
+                            otherUserName: widget.candidateName,
+                            profileImage: null, // adjust based on model
+                          );
+                        },
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF6E75FF),

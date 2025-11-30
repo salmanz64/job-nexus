@@ -74,4 +74,52 @@ class AuthRemoteRepository {
       return Left(AppFailure(e.toString()));
     }
   }
+
+  //Add this inside AuthRemoteRepository class
+
+  Future<String> getUserIdFromProfile(String profileId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ServerConstants.serverUrl}/auth/user/$profileId"),
+        headers: {'Content-type': 'application/json'},
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("Failed to fetch user ID");
+      }
+
+      final resBody = jsonDecode(response.body);
+
+      if (resBody == null || !resBody.containsKey("user_id")) {
+        throw Exception("Invalid response format");
+      }
+
+      return resBody["user_id"];
+    } catch (e) {
+      throw Exception("Error getting user ID: $e");
+    }
+  }
+
+  Future<String> getProfileIdFromUser(String userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ServerConstants.serverUrl}/auth/profile/$userId"),
+        headers: {'Content-type': 'application/json'},
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("Failed to fetch profile ID");
+      }
+
+      final resBody = jsonDecode(response.body);
+
+      if (resBody == null || !resBody.containsKey("profile_id")) {
+        throw Exception("Invalid response format");
+      }
+
+      return resBody["profile_id"];
+    } catch (e) {
+      throw Exception("Error getting profile ID: $e");
+    }
+  }
 }

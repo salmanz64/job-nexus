@@ -69,6 +69,8 @@ class AuthViewModel extends _$AuthViewModel {
   //helpers
   AsyncValue<UserModel>? _loginSuccess(UserModel user) {
     _authLocalRepository.setToken(user.token);
+    _authLocalRepository.setUserId(user.id); //  store user id
+
     return state = AsyncValue.data(user);
   }
 }

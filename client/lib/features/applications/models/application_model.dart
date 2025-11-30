@@ -66,4 +66,28 @@ class ApplicationModel {
       'profile': profile!.toMap(),
     };
   }
+
+  ApplicationModel copyWith({
+    String? id,
+    String? jobId,
+    String? candidateId,
+    String? resumeUrl,
+    String? status,
+    DateTime? appliedAt,
+    DateTime? updatedAt,
+    JobModel? job,
+    ProfileModel? profile,
+  }) {
+    return ApplicationModel(
+      id: id ?? this.id,
+      jobId: jobId ?? this.jobId,
+      candidateId: candidateId ?? this.candidateId,
+      resumeUrl: resumeUrl ?? this.resumeUrl,
+      status: status ?? this.status,
+      appliedAt: appliedAt ?? this.appliedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      job: job ?? this.job,
+      profile: profile ?? this.profile,
+    );
+  }
 }

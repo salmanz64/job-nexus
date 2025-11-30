@@ -41,7 +41,7 @@ final class HomeViewModelProvider
   }
 }
 
-String _$homeViewModelHash() => r'ede06400a76a439bfb8b539681969b59eb1bb425';
+String _$homeViewModelHash() => r'3491d730b16317e2b212a15a4db5f452b1b72289';
 
 abstract class _$HomeViewModel extends $Notifier<AsyncValue<List<JobModel>>> {
   AsyncValue<List<JobModel>> build();

@@ -11,7 +11,7 @@ class Application(Base):
     
 
     job_id = Column(String, ForeignKey("jobs.id"), nullable=False)
-    candidate_id = Column(String, ForeignKey("profiles.id"), nullable=False)  # USERS.ID NOT PROFILES.ID
+    candidate_id = Column(String, ForeignKey("profiles.id"), nullable=False)  #  PROFILES.ID
     
     # Application Details
     status = Column(String, default="applied")

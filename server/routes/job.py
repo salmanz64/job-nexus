@@ -52,4 +52,8 @@ def getAllJobs(db:Session = Depends(get_db),user_dict=Depends(auth_middleware)):
     allJobs = db.query(Job).filter(not_(db.query(Application).filter(Application.candidate_id == profile.id, Application.job_id==Job.id).exists())).all()
     
     return allJobs
+
+
+
+
     
