@@ -6,7 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:jobnexus/core/enums/roles.dart';
 import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/core/utils.dart';
-import 'package:jobnexus/features/profile/view/pages/recruiter_profile.dart';
+import 'package:jobnexus/features/profile/view/pages/candidate_profile.dart';
 import 'package:jobnexus/features/profile/view/widgets/profile_field.dart';
 import 'package:jobnexus/features/profile/view/widgets/profile_header.dart';
 import 'package:jobnexus/features/profile/view/widgets/profile_section.dart';
@@ -14,17 +14,17 @@ import 'package:jobnexus/features/profile/view/widgets/profile_text_area.dart';
 import 'package:jobnexus/features/profile/viewmodal/profile_view_model.dart';
 import 'package:jobnexus/main_page.dart';
 
-class AddRecruiterProfileScreen extends ConsumerStatefulWidget {
+class AddCandidateProfileScreen extends ConsumerStatefulWidget {
   final UserRole role;
-  const AddRecruiterProfileScreen({super.key, required this.role});
+  const AddCandidateProfileScreen({super.key, required this.role});
 
   @override
-  ConsumerState<AddRecruiterProfileScreen> createState() =>
-      _AddRecruiterProfileScreenState();
+  ConsumerState<AddCandidateProfileScreen> createState() =>
+      _AddCandidateProfileScreenState();
 }
 
-class _AddRecruiterProfileScreenState
-    extends ConsumerState<AddRecruiterProfileScreen> {
+class _AddCandidateProfileScreenState
+    extends ConsumerState<AddCandidateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // PROFILE IMAGE
@@ -32,18 +32,17 @@ class _AddRecruiterProfileScreenState
   final ImagePicker _picker = ImagePicker();
 
   // Form controllers
-  final TextEditingController _companyNameController = TextEditingController();
-  final TextEditingController _industryController = TextEditingController();
-  final TextEditingController _companySizeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _websiteController = TextEditingController();
-  final TextEditingController _foundedController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _aboutController = TextEditingController();
-  final TextEditingController _specialtiesController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _jobTitleController = TextEditingController();
+  final TextEditingController _experienceController = TextEditingController();
+  final TextEditingController _educationController = TextEditingController();
+  final TextEditingController _skillsController = TextEditingController();
 
-  List<String> specialties = [];
+  List<String> skills = [];
   bool _isLoading = false;
 
   Future<void> _pickImage() async {
@@ -104,7 +103,7 @@ class _AddRecruiterProfileScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // NEW PROFILE IMAGE PICKER (MINIMAL UI)
+                      // PROFILE IMAGE PICKER
                       Center(
                         child: GestureDetector(
                           onTap: _pickImage,
@@ -129,46 +128,33 @@ class _AddRecruiterProfileScreenState
 
                       const SizedBox(height: 24),
 
-                      ProfileHeader(),
+                      const ProfileHeader(),
                       const SizedBox(height: 24),
 
                       ProfileSection(
-                        title: 'Company Information',
-                        icon: Iconsax.building,
+                        title: 'Personal Information',
+                        icon: Iconsax.user,
                         children: [
                           ProfileTextField(
-                            controller: _companyNameController,
-                            label: 'Company Name *',
-                            hintText: 'Enter your company name',
-                            icon: Iconsax.building,
+                            controller: _nameController,
+                            label: 'Full Name *',
+                            hintText: 'Enter your full name',
+                            icon: Iconsax.user,
                             validator:
                                 (value) =>
                                     value!.isEmpty
-                                        ? 'Please enter company name'
+                                        ? 'Please enter your name'
                                         : null,
                           ),
-                          const SizedBox(height: 16),
-                          ProfileTextField(
-                            controller: _industryController,
-                            label: 'Industry *',
-                            hintText: 'e.g., Technology, Healthcare, Finance',
-                            icon: Iconsax.category,
-                            validator:
-                                (value) =>
-                                    value!.isEmpty
-                                        ? 'Please enter industry'
-                                        : null,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildDropdownField(),
                           const SizedBox(height: 16),
                           ProfileTextField(
                             controller: _locationController,
                             label: 'Location *',
-                            hintText: 'e.g., San Francisco, CA',
+                            hintText: 'e.g., New York, NY',
                             icon: Iconsax.location,
                             validator:
-                                (v) => v!.isEmpty ? 'Enter location' : null,
+                                (v) =>
+                                    v!.isEmpty ? 'Please enter location' : null,
                           ),
                         ],
                       ),
@@ -176,23 +162,43 @@ class _AddRecruiterProfileScreenState
                       const SizedBox(height: 24),
 
                       ProfileSection(
-                        title: 'Company Details',
-                        icon: Iconsax.info_circle,
+                        title: 'Professional Details',
+                        icon: Iconsax.briefcase,
                         children: [
                           ProfileTextField(
-                            controller: _foundedController,
-                            label: 'Founded Year',
-                            hintText: 'e.g., 2015',
-                            icon: Iconsax.calendar,
-                            keyboardType: TextInputType.number,
+                            controller: _jobTitleController,
+                            label: 'Job Title *',
+                            hintText: 'e.g., Software Engineer, UX Designer',
+                            icon: Iconsax.briefcase,
+                            validator:
+                                (value) =>
+                                    value!.isEmpty
+                                        ? 'Please enter job title'
+                                        : null,
                           ),
                           const SizedBox(height: 16),
                           ProfileTextField(
-                            controller: _websiteController,
-                            label: 'Website',
-                            hintText: 'www.example.com',
-                            icon: Iconsax.global,
-                            keyboardType: TextInputType.url,
+                            controller: _experienceController,
+                            label: 'Years of Experience *',
+                            hintText: 'e.g., 3',
+                            icon: Iconsax.clock,
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter experience';
+                              }
+                              if (int.tryParse(value) == null) {
+                                return 'Enter valid number';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          ProfileTextField(
+                            controller: _educationController,
+                            label: 'Education',
+                            hintText: 'e.g., Bachelor of Computer Science',
+                            icon: Iconsax.book,
                           ),
                         ],
                       ),
@@ -206,7 +212,7 @@ class _AddRecruiterProfileScreenState
                           ProfileTextField(
                             controller: _emailController,
                             label: 'Email *',
-                            hintText: 'careers@company.com',
+                            hintText: 'your.email@example.com',
                             keyboardType: TextInputType.emailAddress,
                             icon: Iconsax.sms,
                             validator: (value) {
@@ -216,7 +222,7 @@ class _AddRecruiterProfileScreenState
                               if (!RegExp(
                                 r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                               ).hasMatch(value)) {
-                                return 'Invalid email';
+                                return 'Invalid email format';
                               }
                               return null;
                             },
@@ -224,28 +230,14 @@ class _AddRecruiterProfileScreenState
                           const SizedBox(height: 16),
                           ProfileTextField(
                             controller: _phoneController,
-                            label: 'Phone Number',
+                            label: 'Phone Number *',
                             hintText: '+1 (555) 123-4567',
                             icon: Iconsax.call,
                             keyboardType: TextInputType.phone,
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      ProfileSection(
-                        title: 'About Company',
-                        icon: Iconsax.document_text,
-                        children: [
-                          ProfileTextArea(
-                            controller: _aboutController,
-                            label: 'Company Description *',
-                            hintText: 'Tell us about your company culture...',
                             validator:
                                 (value) =>
-                                    value!.length < 50
-                                        ? 'Min 50 characters required'
+                                    value!.isEmpty
+                                        ? 'Please enter phone number'
                                         : null,
                           ),
                         ],
@@ -254,12 +246,32 @@ class _AddRecruiterProfileScreenState
                       const SizedBox(height: 24),
 
                       ProfileSection(
-                        title: 'Specialties',
+                        title: 'About You',
+                        icon: Iconsax.document_text,
+                        children: [
+                          ProfileTextArea(
+                            controller: _bioController,
+                            label: 'Professional Bio *',
+                            hintText:
+                                'Tell us about your professional background, achievements, and career goals...',
+                            validator:
+                                (value) =>
+                                    value!.length < 30
+                                        ? 'Minimum 30 characters required'
+                                        : null,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      ProfileSection(
+                        title: 'Skills',
                         icon: Iconsax.cpu,
                         children: [
-                          _buildSpecialtiesInput(),
+                          _buildSkillsInput(),
                           const SizedBox(height: 8),
-                          _buildSpecialtiesList(),
+                          _buildSkillsList(),
                         ],
                       ),
 
@@ -295,51 +307,14 @@ class _AddRecruiterProfileScreenState
     );
   }
 
-  Widget _buildDropdownField() {
-    const List<String> companySizes = [
-      '1-10 employees',
-      '11-50 employees',
-      '51-200 employees',
-      '201-500 employees',
-      '501-1000 employees',
-      '1000+ employees',
-    ];
-
-    return DropdownButtonFormField<String>(
-      value:
-          _companySizeController.text.isEmpty
-              ? null
-              : _companySizeController.text,
-      items:
-          companySizes
-              .map(
-                (String size) =>
-                    DropdownMenuItem(value: size, child: Text(size)),
-              )
-              .toList(),
-      onChanged: (value) {
-        setState(() => _companySizeController.text = value!);
-      },
-      validator: (value) => value == null ? "Please select company size" : null,
-      decoration: InputDecoration(
-        hintText: "Select company size",
-        prefixIcon: Icon(Iconsax.people, color: Colors.grey[600]),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey[400]!),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSpecialtiesInput() {
+  Widget _buildSkillsInput() {
     return Row(
       children: [
         Expanded(
           child: TextField(
-            controller: _specialtiesController,
+            controller: _skillsController,
             decoration: InputDecoration(
-              hintText: 'Add specialty (e.g., Mobile Development)',
+              hintText: 'Add skill (e.g., Flutter, UI/UX, Project Management)',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -353,7 +328,7 @@ class _AddRecruiterProfileScreenState
             borderRadius: BorderRadius.circular(12),
           ),
           child: IconButton(
-            onPressed: _addSpecialty,
+            onPressed: _addSkill,
             icon: const Icon(Iconsax.add, color: Colors.white),
           ),
         ),
@@ -361,70 +336,71 @@ class _AddRecruiterProfileScreenState
     );
   }
 
-  Widget _buildSpecialtiesList() {
-    if (specialties.isEmpty) return Container();
+  Widget _buildSkillsList() {
+    if (skills.isEmpty) return Container();
 
     return Wrap(
       spacing: 8,
       children:
-          specialties.map((e) {
+          skills.map((skill) {
             return Chip(
-              label: Text(e),
+              label: Text(skill),
               deleteIcon: const Icon(Icons.close),
-              onDeleted: () => _removeSpecialty(e),
+              onDeleted: () => _removeSkill(skill),
             );
           }).toList(),
     );
   }
 
-  void _addSpecialty() {
-    if (_specialtiesController.text.trim().isNotEmpty) {
+  void _addSkill() {
+    if (_skillsController.text.trim().isNotEmpty) {
       setState(() {
-        specialties.add(_specialtiesController.text.trim());
-        _specialtiesController.clear();
+        skills.add(_skillsController.text.trim());
+        _skillsController.clear();
       });
     }
   }
 
-  void _removeSpecialty(String specialty) {
-    setState(() => specialties.remove(specialty));
+  void _removeSkill(String skill) {
+    setState(() => skills.remove(skill));
   }
 
   void _saveProfile() {
     if (!_formKey.currentState!.validate()) return;
 
     if (_profileImage == null) {
-      showSnackbar("Please upload a profile/company image", context);
+      showSnackbar("Please upload a profile image", context);
       return;
     }
 
     ref
         .read(profileViewModelProvider.notifier)
         .setupProfile(
-          name: _companyNameController.text,
-          industry: _industryController.text,
-          foundedYear: int.tryParse(_foundedController.text) ?? 0,
-          companySize: _companySizeController.text,
+          name: _nameController.text,
           location: _locationController.text,
-          email: _emailController.text,
           phone: _phoneController.text,
+          email: _emailController.text,
+          bio: _bioController.text,
+          jobTitle: _jobTitleController.text,
+          experienceYears: int.tryParse(_experienceController.text) ?? 0,
+          education: _educationController.text,
+          skills: skills,
           role: widget.role,
-          profileImage: _profileImage, // <-- Added to backend payload
+          profileImage: _profileImage,
         );
   }
 
   @override
   void dispose() {
-    _companyNameController.dispose();
-    _industryController.dispose();
-    _companySizeController.dispose();
+    _nameController.dispose();
     _locationController.dispose();
-    _websiteController.dispose();
-    _foundedController.dispose();
-    _emailController.dispose();
     _phoneController.dispose();
-    _aboutController.dispose();
-    _specialtiesController.dispose();
+    _emailController.dispose();
+    _bioController.dispose();
+    _jobTitleController.dispose();
+    _experienceController.dispose();
+    _educationController.dispose();
+    _skillsController.dispose();
     super.dispose();
   }
 }

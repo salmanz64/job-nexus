@@ -9,6 +9,7 @@ import 'package:jobnexus/core/widgets/custom_field.dart';
 import 'package:jobnexus/core/theme/app_pallete.dart';
 import 'package:jobnexus/features/auth/viewmodal/auth_view_model.dart';
 import 'package:jobnexus/features/home/view/pages/home_page.dart';
+import 'package:jobnexus/features/profile/view/pages/candidate_profile_setup.dart';
 import 'package:jobnexus/features/profile/view/pages/recruiter_profile_setup.dart';
 import 'package:jobnexus/main_page.dart';
 
@@ -46,7 +47,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => AddRecruiterProfileScreen(role: data.role),
+              builder:
+                  (context) =>
+                      data.role == UserRole.recruiter
+                          ? AddRecruiterProfileScreen(role: data.role)
+                          : AddCandidateProfileScreen(role: data.role),
             ),
             (_) => false,
           );

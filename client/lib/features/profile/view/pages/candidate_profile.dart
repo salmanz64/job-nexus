@@ -51,6 +51,9 @@ class _CandidateProfileState extends ConsumerState<CandidateProfile> {
                               CandidateProfileHeader(
                                 location: profile.location,
                                 name: profile.name,
+                                imageUrl:
+                                    profile.profileImageUrl ??
+                                    'https://static.vecteezy.com/system/resources/previews/023/731/733/non_2x/head-hunting-related-icon-hr-illustration-sign-candidate-symbol-vector.jpg',
                                 position: profile.jobTitle!,
                               ),
                               _buildQuickStats(),

@@ -6,11 +6,13 @@ class RecruiterProfileHeader extends StatelessWidget {
   final String companyName;
   final String location;
   final String industry;
+  final String imageUrl;
   const RecruiterProfileHeader({
     super.key,
     required this.companyName,
     required this.industry,
     required this.location,
+    required this.imageUrl,
   });
 
   @override
@@ -40,7 +42,7 @@ class RecruiterProfileHeader extends StatelessWidget {
             ),
             child: ClipOval(
               child: Image.network(
-                'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400&h=300&fit=crop',
+                imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(

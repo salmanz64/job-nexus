@@ -34,6 +34,8 @@ class _RecruiterHomeState extends ConsumerState<RecruiterHome> {
   Widget build(BuildContext context) {
     final jobsData = ref.watch(homeViewModelProvider);
     final applicationsData = ref.watch(applicationViewModelProvider);
+    final hiredCountState =
+        ref.watch(homeViewModelProvider.notifier).hiredCount;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,188 +64,209 @@ class _RecruiterHomeState extends ConsumerState<RecruiterHome> {
               loading: () {
                 return Center(child: CircularProgressIndicator());
               },
-              data:
-                  (applications) => SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          // Header
-                          Row(
-                            children: [
-                              Text(
-                                "Recruiter\nDashboard",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'sans-serif',
-                                  color: Color(0XFF110e48),
-                                ),
-                              ),
-                              Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 20.0),
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF6E75FF),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Iconsax.briefcase,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
+              data: (applications) {
+                final sortedApplications = [...applications]
+                  ..sort((a, b) => b.appliedAt.compareTo(a.appliedAt));
 
-                          // Quick Stats Grid
-                          GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            childAspectRatio: 1.3,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 15,
-                            children: [
-                              _buildStatCard(
-                                title: 'Total Jobs Posted',
-                                value: jobs.length.toString(),
-                                icon: Iconsax.document_text,
-                                color: Colors.blue,
-                              ),
-                              _buildStatCard(
-                                title: 'Active Jobs',
-                                value: jobs.length.toString(),
-                                icon: Iconsax.briefcase,
-                                color: Colors.green,
-                              ),
-                              _buildStatCard(
-                                title: 'Total Applications',
-                                value: applications.length.toString(),
-                                icon: Iconsax.profile_2user,
-                                color: Colors.orange,
-                              ),
-                              _buildStatCard(
-                                title: 'Total Hired',
-                                value: '18',
-                                icon: Iconsax.award,
-                                color: Colors.purple,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 30),
+                final recentApplications = sortedApplications.take(3).toList();
 
-                          // Recent Applications
-                          Row(
-                            children: [
-                              Text(
-                                "Recent Applications",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0XFF110e48),
-                                ),
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        // Header
+                        Row(
+                          children: [
+                            Text(
+                              "Recruiter\nDashboard",
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'sans-serif',
+                                color: Color(0XFF110e48),
                               ),
-                              Spacer(),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20.0),
+                              child: Container(
+                                width: 60,
+                                height: 60,
                                 decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  '${applications.length} new',
-                                  style: TextStyle(
-                                    color: Colors.blue[700],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-
-                          // Applications List
-                          ListView.separated(
-                            itemCount: applications.length,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final application = applications[index];
-                              return ApplicationList(
-                                name: application.profile!.name,
-                                position: application.job.title,
-                                timeAgo: timeago.format(application.appliedAt),
-                                status: application.status,
-                                color:
-                                    ApplicationStatusColors.colors[application
-                                        .status]!,
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(height: 15);
-                            },
-                          ),
-
-                          SizedBox(height: 20),
-
-                          // Active Jobs
-                          Row(
-                            children: [
-                              Text(
-                                "Active Jobs",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0XFF110e48),
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                "See All",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
                                   color: Color(0xFF6E75FF),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Iconsax.briefcase,
+                                  color: Colors.white,
+                                  size: 30,
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
 
-                          // Jobs List
-                          ListView.separated(
-                            itemCount: jobs.length,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final job = jobs[index];
-                              return JobList(
-                                onDismissed: () {},
-                                dismissibleKey: ValueKey(job.jobId),
-                                title: job.title,
-                                applications: job.applicationCount.toString(),
-                                status: job.status,
-                                color: JobStatusColors.colors[job.status]!,
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(height: 15);
-                            },
-                          ),
-                        ],
-                      ),
+                        // Quick Stats Grid
+                        GridView.count(
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          childAspectRatio: 1.3,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                          children: [
+                            _buildStatCard(
+                              title: 'Total Jobs Posted',
+                              value: jobs.length.toString(),
+                              icon: Iconsax.document_text,
+                              color: Colors.blue,
+                            ),
+                            _buildStatCard(
+                              title: 'Active Jobs',
+                              value: jobs.length.toString(),
+                              icon: Iconsax.briefcase,
+                              color: Colors.green,
+                            ),
+                            _buildStatCard(
+                              title: 'Total Applications',
+                              value: applications.length.toString(),
+                              icon: Iconsax.profile_2user,
+                              color: Colors.orange,
+                            ),
+                            _buildStatCard(
+                              title: 'Total Hired',
+                              value: (hiredCountState.value ?? 0).toString(),
+                              icon: Iconsax.award,
+                              color: Colors.purple,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 30),
+
+                        // Recent Applications
+                        Row(
+                          children: [
+                            Text(
+                              "Recent Applications",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0XFF110e48),
+                              ),
+                            ),
+                            Spacer(),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blue[50],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${recentApplications.length} new',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+
+                        // Applications List
+                        applications.isEmpty
+                            ? _emptyState(
+                              "No applications yet",
+                              "Applicants will appear here.",
+                              Iconsax.user_search,
+                            )
+                            : ListView.separated(
+                              itemCount: recentApplications.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final application = recentApplications[index];
+                                return ApplicationList(
+                                  name: application.profile!.name,
+                                  position: application.job.title,
+                                  timeAgo: timeago.format(
+                                    application.appliedAt,
+                                  ),
+                                  status: application.status,
+                                  color:
+                                      ApplicationStatusColors.colors[application
+                                          .status]!,
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return SizedBox(height: 15);
+                              },
+                            ),
+
+                        SizedBox(height: 20),
+
+                        // Active Jobs
+                        Row(
+                          children: [
+                            Text(
+                              "Active Jobs",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0XFF110e48),
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              "See All",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF6E75FF),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+
+                        // Jobs List
+                        jobs.isEmpty
+                            ? _emptyState(
+                              "No Jobs Posted",
+                              "Tap + to add your first job.",
+                              Iconsax.add_circle,
+                            )
+                            : ListView.separated(
+                              itemCount: jobs.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final job = jobs[index];
+                                return JobList(
+                                  onDismissed: () {},
+                                  dismissibleKey: ValueKey(job.jobId),
+                                  title: job.title,
+                                  applications: job.applicationCount.toString(),
+                                  status: job.status,
+                                  color: JobStatusColors.colors[job.status]!,
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return SizedBox(height: 15);
+                              },
+                            ),
+                      ],
                     ),
                   ),
+                );
+              },
             ),
       ),
     );
@@ -297,6 +320,32 @@ class _RecruiterHomeState extends ConsumerState<RecruiterHome> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _emptyState(String title, String subtitle, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40),
+      child: Column(
+        children: [
+          Icon(icon, size: 55, color: Colors.grey.shade400),
+          SizedBox(height: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          ),
+        ],
       ),
     );
   }

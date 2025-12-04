@@ -11,6 +11,8 @@ class ClientHome extends ConsumerStatefulWidget {
 }
 
 class _ClientHomeState extends ConsumerState<ClientHome> {
+  String searchQuery = '';
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,11 +76,17 @@ class _ClientHomeState extends ConsumerState<ClientHome> {
                         ],
                       ),
                       child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
+                        textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
-
                           hintText: 'Search Job',
                           border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 14),
                         ),
                       ),
                     ),
@@ -128,27 +136,38 @@ class _ClientHomeState extends ConsumerState<ClientHome> {
                 loading: () {
                   return Center(child: CircularProgressIndicator());
                 },
-                data:
-                    (jobs) => ListView.separated(
-                      itemCount: jobs.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final job = jobs[index];
-                        return JobCard(
-                          jobId: job.jobId,
-                          applicationCount: job.applicationCount.toString(),
-                          companyName: "Figma",
-                          createAt: job.createAt,
-                          jobTitle: job.title,
-                          jobType: job.jobType,
-                          salary: job.salaryRange,
+                data: (jobs) {
+                  final filteredJobs =
+                      jobs.where((job) {
+                        return job.title.toLowerCase().contains(
+                          searchQuery.toLowerCase(),
                         );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 20);
-                      },
-                    ),
+                      }).toList();
+
+                  return ListView.separated(
+                    itemCount: filteredJobs.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final job = filteredJobs[index];
+                      return JobCard(
+                        jobId: job.jobId,
+                        companyUrl:
+                            job.profile.profileImageUrl ??
+                            'https://static.vecteezy.com/system/resources/previews/023/731/733/non_2x/head-hunting-related-icon-hr-illustration-sign-candidate-symbol-vector.jpg',
+                        applicationCount: job.applicationCount.toString(),
+                        companyName: job.profile.name,
+                        createAt: job.createAt,
+                        jobTitle: job.title,
+                        jobType: job.jobType,
+                        salary: job.salaryRange,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: 20);
+                    },
+                  );
+                },
               ),
             ],
           ),

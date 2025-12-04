@@ -105,4 +105,73 @@ class HomeRemoteRepository {
       return Left(AppFailure(e.toString()));
     }
   }
+
+  Future<Either<AppFailure, int>> getHiredCount({required String token}) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ServerConstants.serverUrl}/job/hired/total"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure("Failed to fetch hired count"));
+      }
+
+      final data = jsonDecode(response.body);
+
+      return Right(data['total_hired'] as int);
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
+
+  // ---------------------------------------------------------
+  // 🟢 Fetch Active Jobs Only
+  // ---------------------------------------------------------
+  Future<Either<AppFailure, List<JobModel>>> getActiveJobs({
+    required String token,
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("${ServerConstants.serverUrl}/job/active"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure("Failed to fetch active jobs"));
+      }
+
+      final List data = jsonDecode(response.body);
+
+      final jobs = data.map((e) => JobModel.fromMap(e)).toList();
+
+      return Right(jobs);
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
+
+  // ---------------------------------------------------------
+  // 🔴 Delete Job
+  // ---------------------------------------------------------
+  Future<Either<AppFailure, bool>> deleteJob({
+    required String token,
+    required String jobId,
+  }) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("${ServerConstants.serverUrl}/job/delete/$jobId"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+
+      if (response.statusCode != 200) {
+        final data = jsonDecode(response.body);
+        return Left(AppFailure(data['detail'] ?? "Failed to delete job"));
+      }
+
+      return Right(true);
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
 }

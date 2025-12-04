@@ -24,6 +24,8 @@ class Profile(Base):
     phone = Column(VARCHAR(50))
     email = Column(VARCHAR(100))
     bio = Column(TEXT)
+    profile_image_url = Column(VARCHAR(300), nullable=True)
+
 
     # ------------------------------
     # RECRUITER FIELDS

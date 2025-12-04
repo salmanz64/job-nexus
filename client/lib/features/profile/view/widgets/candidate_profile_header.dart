@@ -7,11 +7,13 @@ class CandidateProfileHeader extends StatelessWidget {
   final String name;
   final String location;
   final String position;
+  final String imageUrl;
   const CandidateProfileHeader({
     super.key,
     required this.name,
     required this.location,
     required this.position,
+    required this.imageUrl,
   });
 
   @override
@@ -41,7 +43,7 @@ class CandidateProfileHeader extends StatelessWidget {
             ),
             child: ClipOval(
               child: Image.network(
-                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+                imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(

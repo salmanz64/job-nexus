@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:jobnexus/core/constants/server_constants.dart';
@@ -18,45 +19,39 @@ ProfileRemoteRepository profileRemoteRepository(Ref ref) {
 
 class ProfileRemoteRepository {
   Future<Either<AppFailure, ProfileModel>> setupProfile({
-    required String name,
-    required String industry,
-    required String companySize,
-    required String location,
-    required String email,
-    required String phone,
+    required Map<String, dynamic> profileData,
     required String token,
-    List<String>? specialities,
-    String? bio,
-    required int foundedYear,
-    String? website,
     required UserRole role,
+    File? profileImage,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse("${ServerConstants.serverUrl}/auth/setup-profile"),
-        headers: {'Content-type': 'application/json', 'x-auth-token': token},
-        body: jsonEncode({
-          'name': name,
-          'industry': industry,
-          'companySize': companySize,
-          'location': location,
-          'email': email,
-          'phone': phone,
-          'specialities': specialities,
-          'bio': bio,
-          'foundedYear': foundedYear,
-          'website': website,
-        }),
-      );
+      final uri = Uri.parse("${ServerConstants.serverUrl}/profile/setup-new");
 
-      final resBody = jsonDecode(response.body) as Map<String, dynamic>;
+      final request =
+          http.MultipartRequest("POST", uri)
+            ..headers['x-auth-token'] = token
+            ..fields['profile_data'] = jsonEncode({
+              ...profileData,
+              "role": role.name, // ensure backend receives role
+            });
+
+      if (profileImage != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath("profile_image", profileImage.path),
+        );
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final resBody = jsonDecode(response.body);
 
       if (response.statusCode != 201) {
-        return Left(AppFailure(resBody['detail']));
+        return Left(AppFailure(resBody['detail'] ?? "Unknown Error"));
       }
+
       return Right(ProfileModel.fromMap(resBody));
     } catch (e) {
-      return Left(AppFailure(e.toString()));
+      return Left(AppFailure("Request Failed: $e"));
     }
   }
 

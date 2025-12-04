@@ -2,6 +2,9 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 # ---------- Unified Profile Schema ----------
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+
 class ProfileCreate(BaseModel):
     # -------------------------
     # COMMON FIELDS
@@ -19,13 +22,18 @@ class ProfileCreate(BaseModel):
     company_size: Optional[str] = None
     founded_year: Optional[int] = None
     website: Optional[str] = None
-    specialities: Optional[List[str]] = None   # JSON List
+    specialities: Optional[List[str]] = None
 
     # -------------------------
     # CANDIDATE FIELDS
     # -------------------------
     experience_years: Optional[int] = None
     job_title: Optional[str] = None
-    skills: Optional[List[str]] = None         # JSON List
+    skills: Optional[List[str]] = None
     education: Optional[str] = None
     resume_url: Optional[str] = None
+
+    # -------------------------
+    # NEW FIELD
+    # -------------------------
+    profile_image_url: Optional[str] = None  # Cloudinary URL stored here

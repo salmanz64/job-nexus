@@ -111,10 +111,13 @@ class _RecruiterProfileState extends ConsumerState<RecruiterProfile> {
                             children: [
                               RecruiterProfileHeader(
                                 companyName: profile.name,
+                                imageUrl:
+                                    profile.profileImageUrl ??
+                                    'https://data-assets.ams3.digitaloceanspaces.com/electriciansearch-co-uk/logos/default-logo.png?rand=579',
                                 location: profile.location,
                                 industry: profile.industry!,
                               ),
-                              _buildCompanyStats(),
+
                               MainProfileSection(
                                 title: 'About Company',
                                 icon: Iconsax.info_circle,

@@ -15,6 +15,7 @@ class JobCard extends ConsumerWidget {
   final String companyName;
   final DateTime createAt;
   final String applicationCount;
+  final String companyUrl;
   const JobCard({
     super.key,
     required this.jobId,
@@ -24,6 +25,7 @@ class JobCard extends ConsumerWidget {
     required this.companyName,
     required this.createAt,
     required this.applicationCount,
+    required this.companyUrl,
   });
 
   @override
@@ -83,19 +85,16 @@ class JobCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: 80,
-                  height: 80,
-                  padding: EdgeInsets.all(20),
+                  width: 70,
+                  height: 70,
+
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Center(
-                    child: Image.network(
-                      width: 25,
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Figma-logo.svg/1365px-Figma-logo.svg.png',
-                      fit: BoxFit.cover,
-                    ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.network(companyUrl, fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(width: 15),

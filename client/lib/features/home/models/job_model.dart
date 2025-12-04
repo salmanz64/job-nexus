@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:jobnexus/features/profile/models/profile_model.dart';
+
 class JobModel {
   final String jobId;
   final String title;
@@ -16,6 +18,7 @@ class JobModel {
   final int applicationCount;
   final String status;
   final DateTime createAt;
+  final ProfileModel profile;
 
   JobModel({
     required this.jobId,
@@ -32,6 +35,7 @@ class JobModel {
     required this.applicationCount,
     required this.status,
     required this.createAt,
+    required this.profile,
   });
 
   JobModel copyWith({
@@ -49,7 +53,7 @@ class JobModel {
     String? status,
   }) {
     return JobModel(
-      jobId: jobId ?? this.jobId,
+      jobId: jobId,
       title: title ?? this.title,
       description: description ?? this.description,
       requirements: requirements ?? this.requirements,
@@ -63,6 +67,7 @@ class JobModel {
       applicationCount: applicationCount ?? this.applicationCount,
       status: status ?? this.status,
       createAt: createAt,
+      profile: profile,
     );
   }
 
@@ -98,6 +103,7 @@ class JobModel {
       skills: map['skills'] as String,
       applicationCount: map['application_count'] as int,
       status: map['status'] as String,
+      profile: ProfileModel.fromMap(map['recruiter']),
       createAt: DateTime.parse(map['created_at']),
     );
   }

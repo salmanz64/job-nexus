@@ -41,19 +41,81 @@ def getRecruiterJobs(db:Session = Depends(get_db),user_dict=Depends(auth_middlew
     allJobs = db.query(Job).filter(Job.recruiter_id==profile.id).all()
     
     return allJobs
+from sqlalchemy.orm import joinedload
 
 @router.get('/all',status_code=200)
-def getAllJobs(db:Session = Depends(get_db),user_dict=Depends(auth_middleware)):
+def getAllJobs(db:Session = Depends(get_db), user_dict=Depends(auth_middleware)):
     user_id = user_dict['uid']
+
     profile = db.query(Profile).filter(Profile.user_id == user_id).first()
     if not profile:
-        raise HTTPException(status_code=404,detail="Profile Not Found")
+        raise HTTPException(status_code=404, detail="Profile Not Found")
     
-    allJobs = db.query(Job).filter(not_(db.query(Application).filter(Application.candidate_id == profile.id, Application.job_id==Job.id).exists())).all()
-    
+    subquery = db.query(Application.job_id).filter(Application.candidate_id == profile.id)
+
+    allJobs = (
+        db.query(Job)
+        .options(joinedload(Job.recruiter))    # <---- loads recruiter profile
+        .filter(~Job.id.in_(subquery))         # "not applied jobs"
+        .all()
+    )
+
     return allJobs
 
 
 
+@router.get('/hired/total', status_code=200)
+def get_total_hired(db: Session = Depends(get_db), user_dict=Depends(auth_middleware)):
+    user_id = user_dict['uid']
+    
+    # Get recruiter profile
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile Not Found")
+    
+    # Count applications with status "hired" linked to recruiter's jobs
+    total_hired = (
+        db.query(Application)
+        .join(Job, Application.job_id == Job.id)
+        .filter(Job.recruiter_id == profile.id, Application.status == "hired")
+        .count()
+    )
+    
+    return {"total_hired": total_hired}
+
+
+
+@router.get('/active', status_code=200)
+def getActiveJobs(db: Session = Depends(get_db), user_dict=Depends(auth_middleware)):
+    user_id = user_dict['uid']
+    
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile Not Found")
+
+    active_jobs = db.query(Job).filter(
+        Job.recruiter_id == profile.id,
+        Job.status == "active"
+    ).all()
+
+    return active_jobs
+
+@router.delete('/delete/{job_id}', status_code=200)
+def deleteJob(job_id: str, db: Session = Depends(get_db), user_dict=Depends(auth_middleware)):
+    user_id = user_dict['uid']
+
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile Not Found")
+
+    job = db.query(Job).filter(Job.id == job_id, Job.recruiter_id == profile.id).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found or not authorized")
+
+    db.delete(job)
+    db.commit()
+
+    return {"message": "Job deleted successfully", "job_id": job_id}
 
     

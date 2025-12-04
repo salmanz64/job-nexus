@@ -6,6 +6,9 @@ class ProfileModel {
   final String email;
   final String? bio;
 
+  // NEW 📌 Profile image
+  final String? profileImageUrl;
+
   // Candidate fields
   final String? jobTitle;
   final int? experienceYears;
@@ -31,6 +34,9 @@ class ProfileModel {
     required this.email,
     this.bio,
 
+    // NEW
+    this.profileImageUrl,
+
     // Candidate
     this.jobTitle,
     this.experienceYears,
@@ -55,14 +61,17 @@ class ProfileModel {
       email: map['email'] ?? '',
       bio: map['bio'],
 
-      // Candidate fields
+      // NEW
+      profileImageUrl: map['profile_image_url'] ?? map['profileImageUrl'],
+
+      // Candidate
       jobTitle: map['job_title'],
       experienceYears: map['experience_years'],
       education: map['education'],
       resumeUrl: map['resume_url'],
       skills: map['skills'] != null ? List<String>.from(map['skills']) : null,
 
-      // Recruiter fields
+      // Recruiter
       industry: map['industry'],
       companySize: map['company_size'],
       foundedYear: map['founded_year'],
@@ -82,6 +91,9 @@ class ProfileModel {
       'phone': phone,
       'email': email,
       'bio': bio,
+
+      // NEW
+      'profile_image_url': profileImageUrl,
 
       // candidate
       'job_title': jobTitle,
