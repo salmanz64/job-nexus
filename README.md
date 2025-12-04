@@ -11,14 +11,18 @@
 
 <table>
   <tr>
-    <th>Home Screen</th>
-    <th>Job Listing</th>
-    <th>Chat System</th>
+    <th>Candidate Home Screen</th>
+    <th>Candidate Profile</th>
+    <th>Recruiter Home</th>
+    <th>Login</th>
+    <th>chat</th>
   </tr>
   <tr>
     <td><img src="./screenshots/client_home_screen.png" width="260"/></td>
-    <td><img src="./screenshots/jobs.png" width="260"/></td>
-    <td><img src="./screenshots/chat.png" width="260"/></td>
+    <td><img src="./screenshots/candidate_profile.png" width="260"/></td>
+    <td><img src="./screenshots/recrutier_home.png" width="260"/></td>
+    <td><img src="./screenshots/login.png" width="260"/></td>
+    <td><img src="./screenshots/chat_screen.png" width="260"/></td>
   </tr>
 </table>
 
