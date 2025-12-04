@@ -63,7 +63,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Login In.',
+                        'Login',
                         style: TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,

@@ -274,7 +274,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                               TextSpan(
                                 text: "Sign In",
                                 style: TextStyle(
-                                  color: Pallete.gradient2,
+                                  color: Pallete.purpleColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

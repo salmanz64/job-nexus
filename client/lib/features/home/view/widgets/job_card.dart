@@ -46,7 +46,7 @@ class JobCard extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF6C63FF), // bright purple-blue tone
+              Color.fromARGB(255, 80, 80, 124), // bright purple-blue tone
               Color(0xFF3F3DFF), // deeper blue
             ],
           ),
@@ -87,7 +87,7 @@ class JobCard extends ConsumerWidget {
                 Container(
                   width: 70,
                   height: 70,
-
+                  padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),

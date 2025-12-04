@@ -18,7 +18,7 @@ class JobModel {
   final int applicationCount;
   final String status;
   final DateTime createAt;
-  final ProfileModel profile;
+  final ProfileModel? profile;
 
   JobModel({
     required this.jobId,
@@ -103,7 +103,10 @@ class JobModel {
       skills: map['skills'] as String,
       applicationCount: map['application_count'] as int,
       status: map['status'] as String,
-      profile: ProfileModel.fromMap(map['recruiter']),
+      profile:
+          map['recruiter'] == null
+              ? null
+              : ProfileModel.fromMap(map['recruiter']),
       createAt: DateTime.parse(map['created_at']),
     );
   }

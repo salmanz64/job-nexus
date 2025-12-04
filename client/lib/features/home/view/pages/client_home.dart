@@ -153,10 +153,10 @@ class _ClientHomeState extends ConsumerState<ClientHome> {
                       return JobCard(
                         jobId: job.jobId,
                         companyUrl:
-                            job.profile.profileImageUrl ??
+                            job.profile!.profileImageUrl ??
                             'https://static.vecteezy.com/system/resources/previews/023/731/733/non_2x/head-hunting-related-icon-hr-illustration-sign-candidate-symbol-vector.jpg',
                         applicationCount: job.applicationCount.toString(),
-                        companyName: job.profile.name,
+                        companyName: job.profile!.name,
                         createAt: job.createAt,
                         jobTitle: job.title,
                         jobType: job.jobType,

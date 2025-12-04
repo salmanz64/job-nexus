@@ -6,12 +6,15 @@ class ApplicationCard extends StatelessWidget {
   final String companyName;
   final Color color;
   final String status;
+  final String? companyUrl;
+
   const ApplicationCard({
     super.key,
     required this.jobTitle,
     required this.companyName,
     required this.status,
     required this.color,
+    required this.companyUrl,
   });
 
   @override
@@ -24,10 +27,12 @@ class ApplicationCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(50),
           child: Image.network(
             width: 25,
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Figma-logo.svg/1365px-Figma-logo.svg.png',
+            companyUrl ??
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Figma-logo.svg/1365px-Figma-logo.svg.png',
             fit: BoxFit.cover,
           ),
         ),

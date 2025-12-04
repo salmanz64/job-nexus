@@ -119,9 +119,9 @@ class _CandidateProfileState extends ConsumerState<CandidateProfile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('25', 'Applied'),
-          _buildStatItem('12', 'Interviews'),
-          _buildStatItem('3', 'Offers'),
+          _buildStatItem('2', 'Applied'),
+          _buildStatItem('1', 'Shortlisted'),
+          _buildStatItem('1', 'Hired'),
           _buildStatItem('85%', 'Match Rate'),
         ],
       ),

@@ -410,6 +410,9 @@ class _AddRecruiterProfileScreenState
           phone: _phoneController.text,
           role: widget.role,
           profileImage: _profileImage, // <-- Added to backend payload
+          bio: _aboutController.text,
+          specialities: specialties,
+          website: _websiteController.text,
         );
   }
 
