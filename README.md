@@ -9,9 +9,19 @@
 
 📸 **Preview**
 
-| Home Screen | Job Listing | Chat System |
-|------------|-------------|-------------|
-| ![](/screenshots/client_home_screen.png) | ![](assets/screenshots/jobs.png) | ![](assets/screenshots/chat.png) |
+<table>
+  <tr>
+    <th>Home Screen</th>
+    <th>Job Listing</th>
+    <th>Chat System</th>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/client_home_screen.png" width="260"/></td>
+    <td><img src="./screenshots/jobs.png" width="260"/></td>
+    <td><img src="./screenshots/chat.png" width="260"/></td>
+  </tr>
+</table>
+
 
 🎬 **Demo Video (Optional):**  
 👉 https://youtu.be/your-video-link
