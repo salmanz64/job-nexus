@@ -14,6 +14,8 @@
     <th>Candidate Home Screen</th>
     <th>Candidate Profile</th>
     <th>Recruiter Home</th>
+    <th>Recruiter Application</th>
+    <th>candidate Applicaton</th>
     <th>Login</th>
     <th>chat</th>
   </tr>
@@ -21,6 +23,8 @@
     <td><img src="./screenshots/client_home_screen.png" width="260"/></td>
     <td><img src="./screenshots/candidate_profile.png" width="260"/></td>
     <td><img src="./screenshots/recrutier_home.png" width="260"/></td>
+     <td><img src="./screenshots/recruiter_application.png" width="260"/></td>
+     <td><img src="./screenshots/candidate_application.png" width="260"/></td>
     <td><img src="./screenshots/login.png" width="260"/></td>
     <td><img src="./screenshots/chat_screen.png" width="260"/></td>
   </tr>
