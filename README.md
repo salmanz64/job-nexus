@@ -71,6 +71,20 @@ This project showcases:
 
 ---
 
+---
+
+## 📄 API Documentation (Swagger UI)
+
+Job Nexus backend includes automatically generated API documentation powered by **FastAPI Swagger**.
+
+<p align="center">
+  <img src="./screenshots/swagger_ui.png" width="600"/>
+</p>
+
+---
+
+
+
 ## ✨ Core Features
 
 ### 🔐 Authentication & Security
