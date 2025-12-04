@@ -25,21 +25,12 @@
     <td><img src="./screenshots/recrutier_home.png" width="260"/></td>
      <td><img src="./screenshots/recruiter_application.png" width="260"/></td>
      <td><img src="./screenshots/candidate_application.png" width="260"/></td>
-    
-  </tr>
-</table>
-
-
-<table>
-  <tr>
-     <th>Login</th>
-    <th>chat</th>
-  </tr>
-  <tr>
-    <td><img src="./screenshots/login.png" width="260"/></td>
+     <td><img src="./screenshots/login.png" width="260"/></td>
     <td><img src="./screenshots/chat_screen.png" width="260"/></td>
   </tr>
 </table>
+
+
 
 
 🎬 **Demo Video (Optional):**  
