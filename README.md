@@ -11,7 +11,7 @@
 
 | Home Screen | Job Listing | Chat System |
 |------------|-------------|-------------|
-| ![](assets/screenshots/home.png) | ![](assets/screenshots/jobs.png) | ![](assets/screenshots/chat.png) |
+| ![](/screenshots/candidate_home_screen.png) | ![](assets/screenshots/jobs.png) | ![](assets/screenshots/chat.png) |
 
 🎬 **Demo Video (Optional):**  
 👉 https://youtu.be/your-video-link
