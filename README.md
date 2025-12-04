@@ -1,46 +1,90 @@
-# 🚀 Job Nexus
+<div align="center">
+  
+# 🚀 Job Nexus  
+### A Modern Full-Stack Job Platform Built for Real-World Hiring
 
-A full-stack job portal platform where **recruiters can post jobs** and **candidates can search and apply** — featuring **real-time chat**, secure authentication, and a modern UI.
-
----
-
-## 📌 Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | Flutter (MVVM + Riverpod + SharedPreferences) |
-| Backend | FastAPI (REST + JWT Auth) |
-| Realtime | WebSockets |
-| Database | PostgreSQL + SQLAlchemy ORM |
+#### 🔍 Search. 🧑‍💼 Apply. 💬 Chat. 🚀 Hire.
 
 ---
 
-## ✨ Features
+📸 **Preview**
 
-### 👤 Authentication
-- JWT-based secure authentication
-- Role-based access (**Candidate / Recruiter**)
-- Persistent sessions using SharedPreferences
+| Home Screen | Job Listing | Chat System |
+|------------|-------------|-------------|
+| ![](assets/screenshots/home.png) | ![](assets/screenshots/jobs.png) | ![](assets/screenshots/chat.png) |
 
-### 🧑‍💼 Recruiter Features
-- Create and manage job postings
-- View applicant list and details
-- Real-time chat with candidates
-- Company profile management
-
-### 🧑‍💻 Candidate Features
-- Search and filter job listings
-- Apply for jobs
-- View application history and status
-- Chat with recruiters
-
-### 🔧 General
-- REST API communication
-- WebSocket real-time messaging
-- MVVM architecture structure
-- Scalable relational database schema
+🎬 **Demo Video (Optional):**  
+👉 https://youtu.be/your-video-link
 
 ---
 
-## 🧩 App Architecture (Flutter)
+</div>
+
+<br>
+
+## 🛠️ Overview
+
+**Job Nexus** is a full-stack job portal where **recruiters can create and manage job postings**, and **candidates can apply, track status, and communicate in real time**.  
+Built with a **scalable, enterprise-ready architecture**, it demonstrates modern app design with secure authentication, reactive UI, persistent sessions, and WebSocket-powered live messaging.
+
+This project showcases:
+
+- 🔧 Full-stack engineering  
+- 📱 Mobile app architecture (MVVM + Riverpod)  
+- 🌐 REST API development  
+- 💬 WebSocket real-time communication  
+- 🗄️ Database design and normalization  
+- 🧩 Clean UI/UX and reusable components  
+
+---
+
+## 🧰 Tech Stack
+
+| Category | Technology |
+|---------|------------|
+| **Frontend** | Flutter, Dart, Riverpod, SharedPreferences, MVVM |
+| **Backend** | FastAPI, Python, SQLAlchemy, Pydantic, WebSockets, JWT Auth |
+| **Database** | PostgreSQL + SQLAlchemy ORM |
+| **Real-Time Messaging** | WebSockets |
+| **State Persistence** | SharedPreferences (Flutter) |
+| **Deployment (Planned)** | Docker, Nginx, Railway/Render, Supabase/AWS RDS |
+
+---
+
+## ✨ Core Features
+
+### 🔐 Authentication & Security
+- JWT-based login & session protection  
+- Role management: **Recruiter** / **Candidate**
+- Persistent login using SharedPreferences  
+
+### 🧑‍💼 Recruiter Portal
+- Create, publish, update and delete job posts  
+- View candidate applications  
+- Approve / Reject / Pending status workflows  
+- Recruiter dashboard for analytics  
+- Real-time chat with applicants  
+
+### 🧑‍💻 Candidate Portal
+- Search and filter jobs by category, salary, and keywords  
+- View job details & company profile  
+- Apply with one click  
+- Track application history and status  
+- Real-time chat with recruiters  
+
+### 💬 WebSocket Chat System
+- Real-time messaging  
+- Seen/Delivered state (planned)  
+- Timestamp formatting using `timeago`  
+- Messages linked with user and job context  
+
+---
+
+## 📱 App Architecture — Flutter
+
+- **MVVM Pattern**  
+- **Riverpod State Management**
+- Clean modules + Feature-first folder structure  
+- Reusable UI widgets & components  
+- API abstraction with repository layer
 
